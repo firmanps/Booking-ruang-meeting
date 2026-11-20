@@ -1,3 +1,11 @@
+# Folder AI agent / editor lokal (di root maupun sub-package)
+.agents/
+.windsurf/
+.claude/
+
+# Contoh output Prisma generate jika ditaruh di folder custom dalam app/package
+generated/
+src/generated/
 .env
 /node_modules
 /dist

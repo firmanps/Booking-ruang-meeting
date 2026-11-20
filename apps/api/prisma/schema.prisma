@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Users {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(100)
+  email      String   @unique @db.VarChar(100)
+  password   String   @db.VarChar(255)
+  role       Role     @default(EMPLOYEE)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  bookings Bookings[]
+
+  @@map("users")
+}
+
+model Rooms {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(100)
+  capacity   Int
+  facilities String   @db.Text
+  locations  String   @db.Text
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  bookings Bookings[]
+
+  @@map("rooms")
+}
+
+model Bookings {
+  id           String    @id @default(uuid())
+  room_id      String
+  user_id      String
+  title        String    @db.VarChar(50)
+  start_at     DateTime
+  end_at       DateTime
+  status       Status    @default(CONFIRMED)
+  cancelled_at DateTime?
+  cancelled_by String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  user  Users @relation(fields: [user_id], references: [id])
+  rooms Rooms @relation(fields: [room_id], references: [id])
+
+  @@index([room_id, start_at, end_at])
+  @@index([user_id])
+  @@map("bookings")
+}
+
+enum Role {
+  EMPLOYEE
+  ADMIN
+}
+
+enum Status {
+  CONFIRMED
+  CANCELLED
+}

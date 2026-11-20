@@ -1,11 +1,94 @@
-# Folder AI agent / editor lokal (di root maupun sub-package)
-.agents/
-.windsurf/
-.claude/
+# =========================================
+# 1. Dependencies & Package Managers
+# =========================================
+node_modules/
+.pnp/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.pnpm-store/
 
-# Contoh output Prisma generate jika ditaruh di folder custom dalam app/package
+# =========================================
+# 2. Build Outputs & Cache
+# =========================================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.turbo/
+.cache/
+.parcel-cache/
+.eslintcache
+*.tsbuildinfo
+
+# =========================================
+# 3. Environment Variables & Secrets
+# =========================================
+.env
+.env.*
+!.env.example
+!.env.template
+!.env.local.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# =========================================
+# 4. Testing, Coverage & Logs
+# =========================================
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =========================================
+# 5. Database, Prisma & Generated Files
+# =========================================
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-journal
 generated/
 src/generated/
-.env
-/node_modules
-/dist
+
+# =========================================
+# 6. AI Coding Agents & Editor Local Configs
+# =========================================
+.agents/
+.claude/
+.windsurf/
+.cursor/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+
+# =========================================
+# 7. OS & Archive Files
+# =========================================
+.DS_Store
+Thumbs.db
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z

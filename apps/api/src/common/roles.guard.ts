@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { UserRole } from './roles.decorator';
 import { ROLES_KEY } from './roles.decorator';
@@ -20,6 +25,10 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const userRole = request.user?.role as UserRole | undefined;
 
-    return userRole !== undefined && requiredRoles.includes(userRole);
+    if (!userRole || !requiredRoles.includes(userRole)) {
+      throw new ForbiddenException('Anda tidak memiliki akses untuk fitur ini');
+    }
+
+    return true;
   }
 }

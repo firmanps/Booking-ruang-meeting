@@ -1,0 +1,51 @@
+import { Global, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { PrismaService } from './prisma.service';
+import { RolesGuard } from './roles.guard';
+import { ZodValidationPipe } from './zod-validation.pipe';
+
+@Global()
+@Module({
+  imports: [
+    ConfigModule,
+    WinstonModule.forRoot({
+      level:
+        process.env.LOG_LEVEL ??
+        (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
+      defaultMeta: {
+        service: 'contact-management',
+        environment: process.env.NODE_ENV ?? 'development',
+      },
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+        winston.format.json(),
+      ),
+      transports: [new winston.transports.Console()],
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.getOrThrow<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: (config.get<string>('JWT_EXPIRES_IN') ||
+            '1h') as NonNullable<JwtModuleOptions['signOptions']>['expiresIn'],
+        },
+      }),
+    }),
+  ],
+  providers: [ZodValidationPipe, JwtAuthGuard, PrismaService, RolesGuard],
+  exports: [
+    JwtModule,
+    ZodValidationPipe,
+    JwtAuthGuard,
+    PrismaService,
+    RolesGuard,
+  ],
+})
+export class CommonModule {}

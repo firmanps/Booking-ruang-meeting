@@ -1,5 +1,12 @@
 {
   "name": "@repo/shared",
+  "exports": {
+    "./schemas/*": {
+      "types": "./dist/schemas/*.d.ts",
+      "require": "./dist/schemas/*.js",
+      "default": "./dist/schemas/*.js"
+    }
+  },
   "version": "0.0.0",
   "private": true,
   "main": "./dist/index.js",

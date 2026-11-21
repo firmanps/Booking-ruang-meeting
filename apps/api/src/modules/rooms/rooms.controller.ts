@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -19,6 +20,7 @@ import {
   type RoomsQueryInput,
   type UpdateRoomInput,
 } from '@repo/shared/schemas/rooms.schema';
+import type { Request } from 'express';
 import { JwtAuthGuard } from 'src/common/jwt-auth.guard';
 import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/roles.guard';
@@ -45,6 +47,11 @@ export class RoomsController {
     return this.roomService.getRooms(query);
   }
 
+  @Get(':id')
+  getRoomById(@Param('id') id: string) {
+    return this.roomService.getRoomById(id);
+  }
+
   @Get(':id/availability')
   getRoomAvailability(
     @Param('id') id: string,
@@ -60,8 +67,9 @@ export class RoomsController {
   updateRoom(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateRoomSchema)) body: UpdateRoomInput,
+    @Req() request: Request & { user: { sub: string } },
   ) {
-    return this.roomService.updateRoom(id, body);
+    return this.roomService.updateRoom(id, body, request.user.sub);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

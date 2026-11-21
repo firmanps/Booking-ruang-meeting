@@ -12,6 +12,12 @@ export const updateRoomSchema = createRoomSchema.partial().refine((data) => Obje
 
 export const roomsQuerySchema = z.object({
   minCapacity: z.coerce.number().int().positive().optional(),
+  is_active: z
+    .enum(['true', 'false'])
+    .optional()
+    .transform((value) =>
+      value === undefined ? undefined : value === 'true',
+    ),
 });
 
 export const roomAvailabilityQuerySchema = z.object({

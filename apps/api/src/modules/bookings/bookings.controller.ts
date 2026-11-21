@@ -23,8 +23,7 @@ import { BookingsService } from './bookings.service';
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('EMPLOYEE')
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(
     @Req() request: Request & { user: { sub: string } },
@@ -51,8 +50,7 @@ export class BookingsController {
     return this.bookingsService.cancel(id, request.user.sub, request.user.role);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('EMPLOYEE')
+  @UseGuards(JwtAuthGuard)
   @Get('me')
   getMyBookings(@Req() request: Request & { user: { sub: string } }) {
     return this.bookingsService.getMyBookings(request.user.sub);

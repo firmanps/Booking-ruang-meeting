@@ -1,29 +1,19 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { Eye } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Masuk | MeetSpace",
+  title: "Login | MeetSpace",
 };
 
-export default function Login() {
+export default function LoginPage() {
   return (
     <Card className="w-full max-w-md border-0 shadow-none lg:border lg:shadow-sm">
       <CardHeader className="pb-2">
@@ -34,9 +24,7 @@ export default function Login() {
           MeetSpace
         </div>
         <CardTitle className="text-2xl">Selamat datang kembali</CardTitle>
-        <CardDescription>
-          Masuk untuk mengelola pemesanan ruang meeting Anda.
-        </CardDescription>
+        <CardDescription>Masuk untuk mengelola pemesanan ruang meeting Anda.</CardDescription>
       </CardHeader>
 
       <CardContent className="mt-4">
@@ -44,34 +32,18 @@ export default function Login() {
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="nama@perusahaan.com"
-                autoComplete="email"
-              />
+              <Input id="email" name="email" type="email" placeholder="nama@perusahaan.com" autoComplete="email" />
             </Field>
 
             <Field>
               <div className="flex items-center justify-between">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                <button
-                  type="button"
-                  className="text-xs font-medium text-muted-foreground hover:text-foreground"
-                >
+                <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground">
                   Lupa password?
                 </button>
               </div>
               <div className="relative">
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Masukkan password"
-                  autoComplete="current-password"
-                  className="pr-10"
-                />
+                <Input id="password" name="password" type="password" placeholder="Masukkan password" autoComplete="current-password" className="pr-10" />
                 <Eye className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               </div>
             </Field>
@@ -91,10 +63,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Belum punya akun?{" "}
-          <Link
-            href="/register"
-            className="font-medium text-foreground underline underline-offset-4"
-          >
+          <Link href="/register" className="font-medium text-foreground underline underline-offset-4">
             Daftar sekarang
           </Link>
         </p>

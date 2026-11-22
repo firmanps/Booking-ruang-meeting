@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { Eye } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,10 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 export const metadata: Metadata = {
-  title: "Daftar | MeetSpace",
+  title: "Register | MeetSpace",
 };
 
-export default function Register() {
+export default function RegisterPage() {
   return (
     <Card className="w-full max-w-md border-0 shadow-none lg:border lg:shadow-sm">
       <CardHeader className="pb-2">

@@ -22,7 +22,7 @@ export class JwtAuthGuard implements CanActivate {
     const cookieToken = request.headers.cookie
       ?.split(';')
       .map((item) => item.trim())
-      .find((item) => item.startsWith('access_token='))
+      .find((item) => item.startsWith('accessToken='))
       ?.split('=')[1];
 
     const token = bearerToken || cookieToken;

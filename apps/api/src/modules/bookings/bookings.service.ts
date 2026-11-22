@@ -14,16 +14,16 @@ export class BookingsService {
 
   async getAllBookings() {
     const bookings = await this.prisma.bookings.findMany({
-      orderBy: { start_at: 'asc' },
+      orderBy: { startAt: 'asc' },
       select: {
         id: true,
         title: true,
-        start_at: true,
-        end_at: true,
+        startAt: true,
+        endAt: true,
         status: true,
-        cancelled_at: true,
-        cancelled_by: true,
-        created_at: true,
+        cancelledAt: true,
+        cancelledBy: true,
+        createdAt: true,
         user: {
           select: {
             id: true,
@@ -48,17 +48,17 @@ export class BookingsService {
 
   async getMyBookings(userId: string) {
     const bookings = await this.prisma.bookings.findMany({
-      where: { user_id: userId },
-      orderBy: { start_at: 'asc' },
+      where: { userId: userId },
+      orderBy: { startAt: 'asc' },
       select: {
         id: true,
         title: true,
-        start_at: true,
-        end_at: true,
+        startAt: true,
+        endAt: true,
         status: true,
-        cancelled_at: true,
-        cancelled_by: true,
-        created_at: true,
+        cancelledAt: true,
+        cancelledBy: true,
+        createdAt: true,
         rooms: {
           select: {
             id: true,
@@ -78,7 +78,7 @@ export class BookingsService {
       where: { id: bookingId },
       select: {
         id: true,
-        user_id: true,
+        userId: true,
         status: true,
       },
     });
@@ -87,7 +87,7 @@ export class BookingsService {
       throw new NotFoundException('Booking tidak ditemukan');
     }
 
-    if (role !== 'ADMIN' && booking.user_id !== userId) {
+    if (role !== 'ADMIN' && booking.userId !== userId) {
       throw new ForbiddenException('Anda tidak boleh membatalkan booking ini');
     }
 
@@ -99,15 +99,15 @@ export class BookingsService {
       where: { id: bookingId },
       data: {
         status: 'CANCELLED',
-        cancelled_at: new Date(),
-        cancelled_by: userId,
+        cancelledAt: new Date(),
+        cancelledBy: userId,
       },
       select: {
         id: true,
         title: true,
         status: true,
-        cancelled_at: true,
-        cancelled_by: true,
+        cancelledAt: true,
+        cancelledBy: true,
       },
     });
 
@@ -167,23 +167,23 @@ export class BookingsService {
 
       const room = await tx.rooms.findUnique({
         where: { id: data.roomId },
-        select: { id: true, is_active: true },
+        select: { id: true, isActive: true },
       });
 
       if (!room) {
         throw new NotFoundException('Ruangan tidak ditemukan');
       }
 
-      if (!room.is_active) {
+      if (!room.isActive) {
         throw new BadRequestException('Ruangan tidak aktif');
       }
 
       const overlap = await tx.bookings.findFirst({
         where: {
-          room_id: data.roomId,
+          roomId: data.roomId,
           status: 'CONFIRMED',
-          start_at: { lt: endAt },
-          end_at: { gt: startAt },
+          startAt: { lt: endAt },
+          endAt: { gt: startAt },
         },
         select: { id: true },
       });
@@ -196,22 +196,22 @@ export class BookingsService {
 
       return tx.bookings.create({
         data: {
-          room_id: data.roomId,
-          user_id: userId,
+          roomId: data.roomId,
+          userId: userId,
           title: data.title,
-          start_at: startAt,
-          end_at: endAt,
+          startAt: startAt,
+          endAt: endAt,
           status: 'CONFIRMED',
         },
         select: {
           id: true,
-          room_id: true,
-          user_id: true,
+          roomId: true,
+          userId: true,
           title: true,
-          start_at: true,
-          end_at: true,
+          startAt: true,
+          endAt: true,
           status: true,
-          created_at: true,
+          createdAt: true,
         },
       });
     });

@@ -43,8 +43,8 @@ Status: `201 Created`
     "name": "Budi Santoso",
     "email": "budi@example.com",
     "role": "EMPLOYEE",
-    "created_at": "2026-11-22T01:15:16.970Z",
-    "updated_at": "2026-11-22T01:15:16.970Z"
+    "createdAt": "2026-11-22T01:15:16.970Z",
+    "updatedAt": "2026-11-22T01:15:16.970Z"
   }
 }
 ```
@@ -94,7 +94,7 @@ Status: `201 Created`
 Endpoint juga menyetel cookie:
 
 ```text
-access_token=<jwt>; HttpOnly; SameSite=Lax; Max-Age=3600
+accessToken=<jwt>; HttpOnly; SameSite=Lax; Max-Age=3600
 ```
 
 ### Error
@@ -108,10 +108,10 @@ access_token=<jwt>; HttpOnly; SameSite=Lax; Max-Age=3600
 
 ```http
 GET /auth/me
-Authorization: Bearer <access_token>
+Authorization: Bearer <accessToken>
 ```
 
-Autentikasi dapat memakai header bearer atau cookie `access_token`.
+Autentikasi dapat memakai header bearer atau cookie `accessToken`.
 
 ### Response
 
@@ -124,8 +124,8 @@ Status: `200 OK`
     "name": "Budi Santoso",
     "email": "budi@example.com",
     "role": "EMPLOYEE",
-    "created_at": "2026-11-22T01:15:16.970Z",
-    "updated_at": "2026-11-22T01:15:16.970Z"
+    "createdAt": "2026-11-22T01:15:16.970Z",
+    "updatedAt": "2026-11-22T01:15:16.970Z"
   }
 }
 ```

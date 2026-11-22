@@ -7,12 +7,16 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "MeetSpace",
-  description: "Check real-time meeting room availability and book instantly with MeetSpace. No admin approval needed—just pick a time slot and reserve your space in seconds.",
+  description: "Aplikasi booking ruang rapat MeetSpace untuk gedung kantor.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={cn("font-sans", geist.variable)}
+    >
       <body className="min-h-full">{children}</body>
     </html>
   );

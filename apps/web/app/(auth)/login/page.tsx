@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, Eye } from "lucide-react";
+import Image from "next/image";
+import { Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,8 +28,8 @@ export default function Login() {
     <Card className="w-full max-w-md border-0 shadow-none lg:border lg:shadow-sm">
       <CardHeader className="pb-2">
         <div className="mb-7 flex items-center gap-2 text-base font-semibold lg:hidden">
-          <span className="grid size-8 place-items-center rounded-lg bg-zinc-950 text-white">
-            <CalendarDays className="size-4" />
+          <span className="grid size-9 place-items-center overflow-hidden rounded-lg bg-[#edf3ff]">
+            <Image src="/logo.webp" alt="" width={36} height={36} className="size-full object-contain" />
           </span>
           MeetSpace
         </div>

@@ -23,9 +23,9 @@ export class RoomsService {
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
-        created_at: true,
-        updated_at: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -54,27 +54,27 @@ export class RoomsService {
           capacity: true,
           facilities: true,
           locations: true,
-          is_active: true,
-          created_at: true,
-          updated_at: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
 
       let cancelledBookingsCount = 0;
 
-      if (data.is_active === false) {
+      if (data.isActive === false) {
         const now = new Date();
 
         const cancelled = await tx.bookings.updateMany({
           where: {
-            room_id: id,
+            roomId: id,
             status: 'CONFIRMED',
-            end_at: { gt: now },
+            endAt: { gt: now },
           },
           data: {
             status: 'CANCELLED',
-            cancelled_at: now,
-            cancelled_by: adminId,
+            cancelledAt: now,
+            cancelledBy: adminId,
           },
         });
 
@@ -87,7 +87,7 @@ export class RoomsService {
             ? `Ruangan berhasil diperbarui dan ${cancelledBookingsCount} booking dibatalkan`
             : 'Ruangan berhasil diperbarui',
         room,
-        cancelled_bookings_count: cancelledBookingsCount,
+        cancelledBookingsCount: cancelledBookingsCount,
       };
     });
   }
@@ -95,8 +95,8 @@ export class RoomsService {
   async getRooms(query: RoomsQueryInput) {
     const rooms = await this.prisma.rooms.findMany({
       where: {
-        ...(query.is_active !== undefined
-          ? { is_active: query.is_active }
+        ...(query.isActive !== undefined
+          ? { isActive: query.isActive }
           : {}),
         ...(query.minCapacity ? { capacity: { gte: query.minCapacity } } : {}),
       },
@@ -107,7 +107,7 @@ export class RoomsService {
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
+        isActive: true,
       },
     });
 
@@ -123,9 +123,9 @@ export class RoomsService {
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
-        created_at: true,
-        updated_at: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -149,14 +149,14 @@ export class RoomsService {
     }
 
     const room = await this.prisma.rooms.findFirst({
-      where: { id, is_active: true },
+      where: { id, isActive: true },
       select: {
         id: true,
         name: true,
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
+        isActive: true,
       },
     });
 
@@ -170,17 +170,17 @@ export class RoomsService {
 
     const bookings = await this.prisma.bookings.findMany({
       where: {
-        room_id: id,
+        roomId: id,
         status: 'CONFIRMED',
-        start_at: { lt: end },
-        end_at: { gt: start },
+        startAt: { lt: end },
+        endAt: { gt: start },
       },
-      orderBy: { start_at: 'asc' },
+      orderBy: { startAt: 'asc' },
       select: {
         id: true,
         title: true,
-        start_at: true,
-        end_at: true,
+        startAt: true,
+        endAt: true,
       },
     });
 

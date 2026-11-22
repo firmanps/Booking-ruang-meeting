@@ -18,8 +18,8 @@ export const authUserSchema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(100),
   role: roleSchema,
-  created_at: z.coerce.date(),
-  updated_at: z.coerce.date(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

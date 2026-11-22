@@ -5,14 +5,14 @@ export const createRoomSchema = z.object({
   capacity: z.number().int().positive().max(1000),
   facilities: z.string().trim().min(1).max(1000),
   locations: z.string().trim().min(1).max(1000),
-  is_active: z.boolean().optional().default(true),
+  isActive: z.boolean().optional().default(true),
 });
 
 export const updateRoomSchema = createRoomSchema.partial().refine((data) => Object.keys(data).length > 0, { message: "Minimal satu field harus diisi" });
 
 export const roomsQuerySchema = z.object({
   minCapacity: z.coerce.number().int().positive().optional(),
-  is_active: z
+  isActive: z
     .enum(['true', 'false'])
     .optional()
     .transform((value) =>

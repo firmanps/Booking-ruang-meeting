@@ -33,7 +33,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const result = await this.authService.login(body);
-    response.cookie('access_token', result.access_token, {
+    response.cookie('accessToken', result.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

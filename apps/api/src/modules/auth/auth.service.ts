@@ -39,8 +39,8 @@ export class AuthService {
           name: true,
           email: true,
           role: true,
-          created_at: true,
-          updated_at: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
 
@@ -85,7 +85,7 @@ export class AuthService {
     };
 
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
       user: {
         id: user.id,
         name: user.name,
@@ -103,8 +103,8 @@ export class AuthService {
         name: true,
         email: true,
         role: true,
-        created_at: true,
-        updated_at: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 

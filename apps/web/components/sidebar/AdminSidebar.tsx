@@ -1,34 +1,13 @@
 "use client";
 
-import {
-  Building2,
-  CalendarCheck2,
-  ChevronLeft,
-  ClipboardList,
-  LayoutDashboard,
-  Menu,
-  SlidersHorizontal,
-  X,
-} from "lucide-react";
+import { Building2, CalendarCheck2, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, SlidersHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, type CSSProperties, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 
 const mainMenu = [
   { label: "Dasbor", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -47,15 +26,20 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
   return (
     <SidebarProvider
       className="min-h-svh w-auto"
-      style={{
-        "--sidebar": "#0b1a2d",
-        "--sidebar-foreground": "#ffffff",
-        "--sidebar-accent": "#203d70",
-        "--sidebar-accent-foreground": "#ffffff",
-        "--sidebar-border": "rgba(255,255,255,0.1)",
-        "--sidebar-width-icon": "4.5rem",
-      } as CSSProperties}
+      style={
+        {
+          "--sidebar": "#0b1a2d",
+          "--sidebar-foreground": "#ffffff",
+          "--sidebar-accent": "#203d70",
+          "--sidebar-accent-foreground": "#ffffff",
+          "--sidebar-border": "rgba(255,255,255,0.1)",
+          "--sidebar-width-icon": "4.5rem",
+        } as CSSProperties
+      }
     >
+      {/* Tambahan: Komponen untuk otomatis menutup sidebar mobile saat pindah halaman */}
+      <SidebarAutoCloser />
+
       <Sidebar
         side="left"
         collapsible="icon"
@@ -77,6 +61,24 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
           <MenuSection title="Menu Utama" items={mainMenu} pathname={pathname} />
           <MenuSection title="Administrasi" items={adminMenu} pathname={pathname} />
         </SidebarContent>
+
+        <SidebarFooter className="border-t border-white/10 bg-[#0b1a2d] px-2 py-3 group-data-[collapsible=icon]:px-3">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                type="button"
+                tooltip="Logout"
+                size="lg"
+                className="h-12 gap-0 rounded-2xl px-4 text-[16px] font-medium text-[#c0cee8] transition-colors hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:!size-12 group-data-[collapsible=icon]:!rounded-xl group-data-[collapsible=icon]:!px-0"
+              >
+                <LogOut className="size-5 shrink-0" strokeWidth={2} />
+                <span className="ml-3 max-w-[200px] overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
+                  Logout
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
       </Sidebar>
 
       <DesktopFloatingToggle />
@@ -86,14 +88,27 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
   );
 }
 
+// Komponen Baru: Otomatis menutup sidebar (terutama di mobile) saat pathname berubah
+function SidebarAutoCloser() {
+  const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  useEffect(() => {
+    // Jika di layar kecil (mobile), tutup sidebar setiap kali pindah halaman
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [pathname, isMobile, setOpenMobile]);
+
+  return null;
+}
+
 function DesktopFloatingToggle() {
   const { state, isMobile, toggleSidebar } = useSidebar();
   if (isMobile) return null;
 
   const isCollapsed = state === "collapsed";
-  const leftPosition = isCollapsed
-    ? "calc(var(--sidebar-width-icon) - 0.75rem)"
-    : "calc(var(--sidebar-width) - 0.75rem)";
+  const leftPosition = isCollapsed ? "calc(var(--sidebar-width-icon) - 0.75rem)" : "calc(var(--sidebar-width) - 0.75rem)";
 
   return (
     <button
@@ -125,7 +140,14 @@ function MobileSidebarTrigger() {
 
   return (
     <div className="fixed right-4 bottom-[max(14px,env(safe-area-inset-bottom))] z-50 md:hidden">
-      <Button type="button" variant="ghost" size="icon" aria-label="Buka menu" onClick={toggleSidebar} className="size-14 rounded-full border border-white/60 bg-white/90 text-[#173b77] shadow-[0_10px_35px_rgba(15,23,42,0.22)] backdrop-blur-xl hover:bg-white hover:text-[#173b77] [&_svg]:size-6">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label="Buka menu"
+        onClick={toggleSidebar}
+        className="size-14 rounded-full border border-white/60 bg-white/90 text-[#173b77] shadow-[0_10px_35px_rgba(15,23,42,0.22)] backdrop-blur-xl hover:bg-white hover:text-[#173b77] [&_svg]:size-6"
+      >
         <Menu className="size-5" />
       </Button>
     </div>
@@ -143,7 +165,13 @@ function MenuSection({ title, items, pathname }: { title: string; items: typeof 
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
             <SidebarMenuItem key={href}>
-              <SidebarMenuButton render={<Link href={href} aria-current={active ? "page" : undefined} />} isActive={active} tooltip={label} size="lg" className="h-14 gap-0 rounded-2xl px-4 text-[17px] font-medium text-[#c0cee8] transition-[width,height,padding,border-radius,background-color,color] duration-300 ease-in-out hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:!size-12 group-data-[collapsible=icon]:!rounded-xl group-data-[collapsible=icon]:!pr-[12px] group-data-[collapsible=icon]:!pl-[16px] group-data-[collapsible=icon]:!py-0 data-active:bg-[#203d70] data-active:text-white data-active:hover:bg-[#203d70]">
+              <SidebarMenuButton
+                render={<Link href={href} aria-current={active ? "page" : undefined} />}
+                isActive={active}
+                tooltip={label}
+                size="lg"
+                className="h-14 gap-0 rounded-2xl px-4 text-[17px] font-medium text-[#c0cee8] transition-[width,height,padding,border-radius,background-color,color] duration-300 ease-in-out hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:!size-12 group-data-[collapsible=icon]:!rounded-xl group-data-[collapsible=icon]:!pr-[12px] group-data-[collapsible=icon]:!pl-[16px] group-data-[collapsible=icon]:!py-0 data-active:bg-[#203d70] data-active:text-white data-active:hover:bg-[#203d70]"
+              >
                 <Icon className="size-5 shrink-0" strokeWidth={2} />
                 <span className="ml-3 max-w-[200px] overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
                   {label}

@@ -31,6 +31,7 @@ const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
@@ -72,7 +73,26 @@ function SidebarProvider({
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
   const [_open, _setOpen] = React.useState(defaultOpen)
+  const [isRestoringState, setIsRestoringState] = React.useState(true)
   const open = openProp ?? _open
+
+  useIsomorphicLayoutEffect(() => {
+    if (openProp === undefined) {
+      const savedState = document.cookie
+        .split(";")
+        .map((cookie) => cookie.trim())
+        .find((cookie) => cookie.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+        ?.split("=")[1]
+
+      if (savedState === "true" || savedState === "false") {
+        _setOpen(savedState === "true")
+      }
+    }
+
+    const frame = window.requestAnimationFrame(() => setIsRestoringState(false))
+    return () => window.cancelAnimationFrame(frame)
+  }, [openProp])
+
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
@@ -130,6 +150,7 @@ function SidebarProvider({
     <SidebarContext.Provider value={contextValue}>
       <div
         data-slot="sidebar-wrapper"
+        data-sidebar-restoring={isRestoringState ? "true" : undefined}
         style={
           {
             "--sidebar-width": SIDEBAR_WIDTH,

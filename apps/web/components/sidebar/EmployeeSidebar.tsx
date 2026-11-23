@@ -5,6 +5,7 @@ import {
   CalendarCheck2,
   ChevronLeft,
   LayoutDashboard,
+  LogOut,
   Menu,
   X,
 } from "lucide-react";
@@ -19,6 +20,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
+  SidebarFooter,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -84,6 +86,19 @@ export default function EmployeeSidebar({ children }: { children?: ReactNode }) 
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
+
+        <SidebarFooter className="border-t border-white/10 bg-[#0b1a2d] px-2 py-3 group-data-[collapsible=icon]:px-3">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton type="button" tooltip="Logout" size="lg" className="h-12 gap-0 rounded-2xl px-4 text-[16px] font-medium text-[#c0cee8] transition-colors hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:!size-12 group-data-[collapsible=icon]:!rounded-xl group-data-[collapsible=icon]:!px-0">
+                <LogOut className="size-5 shrink-0" strokeWidth={2} />
+                <span className="ml-3 max-w-[200px] overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
+                  Logout
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
       </Sidebar>
 
       <EmployeeDesktopToggle />

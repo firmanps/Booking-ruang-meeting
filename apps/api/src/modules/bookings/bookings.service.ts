@@ -13,37 +13,49 @@ export class BookingsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllBookings() {
-    const bookings = await this.prisma.bookings.findMany({
-      orderBy: { startAt: 'asc' },
-      select: {
-        id: true,
-        title: true,
-        startAt: true,
-        endAt: true,
-        status: true,
-        cancelledAt: true,
-        cancelledBy: true,
-        createdAt: true,
-        user: {
+    const now = new Date();
+    const [bookings, totalUpcomingBookings, totalRooms, totalActiveRooms] =
+      await Promise.all([
+        this.prisma.bookings.findMany({
+          orderBy: { startAt: 'asc' },
           select: {
             id: true,
-            name: true,
-            email: true,
-            role: true,
+            title: true,
+            startAt: true,
+            endAt: true,
+            status: true,
+            cancelledAt: true,
+            cancelledBy: true,
+            createdAt: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+              },
+            },
+            rooms: {
+              select: {
+                id: true,
+                name: true,
+                capacity: true,
+                locations: true,
+              },
+            },
           },
-        },
-        rooms: {
-          select: {
-            id: true,
-            name: true,
-            capacity: true,
-            locations: true,
-          },
-        },
-      },
-    });
+        }),
+        this.prisma.bookings.count({
+          where: { status: 'CONFIRMED', startAt: { gt: now } },
+        }),
+        this.prisma.rooms.count(),
+        this.prisma.rooms.count({ where: { isActive: true } }),
+      ]);
 
-    return { bookings };
+    return {
+      summary: { totalUpcomingBookings, totalRooms, totalActiveRooms },
+      bookings,
+    };
   }
 
   async getMyBookings(userId: string) {

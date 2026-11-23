@@ -22,6 +22,14 @@ export const bookingSchema = z.object({
 });
 
 export const bookingsResponseSchema = z.object({ bookings: z.array(bookingSchema) });
+export const bookingsDashboardResponseSchema = z.object({
+  bookings: z.array(bookingSchema),
+  summary: z.object({
+    totalUpcomingBookings: z.number().int().nonnegative(),
+    totalRooms: z.number().int().nonnegative(),
+    totalActiveRooms: z.number().int().nonnegative(),
+  }),
+});
 export const myBookingSchema = bookingSchema.omit({ user: true });
 export const myBookingsResponseSchema = z.object({ bookings: z.array(myBookingSchema) });
 export const cancelBookingResponseSchema = z.object({
@@ -34,4 +42,5 @@ export const cancelBookingResponseSchema = z.object({
 
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
 export type Booking = z.infer<typeof bookingSchema>;
+export type BookingsDashboardSummary = z.infer<typeof bookingsDashboardResponseSchema>["summary"];
 export type MyBooking = z.infer<typeof myBookingSchema>;

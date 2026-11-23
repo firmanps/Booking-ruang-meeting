@@ -7,7 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getAllBookings } from "@/lib/services/bookings.service";
+import { getBookingsDashboard } from "@/lib/services/bookings.service";
 import { getCurrentProfile } from "@/lib/services/profile.service";
 import type { Booking } from "@repo/shared/schemas/bookings.schema";
 import { ArrowRight, BadgeCheck, Building2, CalendarClock, CalendarDays, CheckCircle2, Clock, LoaderCircle, XCircle } from "lucide-react";
@@ -27,6 +27,7 @@ const createdAtFormatter = new Intl.DateTimeFormat("id-ID", {
 export default function Dashboard() {
   const [userName, setUserName] = useState("");
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
+  const [summary, setSummary] = useState<{ totalUpcomingBookings: number; totalRooms: number; totalActiveRooms: number } | null>(null);
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [bookingsError, setBookingsError] = useState("");
 
@@ -34,8 +35,9 @@ export default function Dashboard() {
     setLoadingBookings(true);
     setBookingsError("");
     try {
-      const bookings = await getAllBookings();
-      setRecentBookings([...bookings].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 5));
+      const result = await getBookingsDashboard();
+      setSummary(result.summary);
+      setRecentBookings([...result.bookings].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 5));
     } catch (error) {
       setBookingsError(error instanceof Error ? error.message : "Reservasi terbaru gagal dimuat.");
     } finally {
@@ -45,9 +47,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     let active = true;
-    getAllBookings()
-      .then((bookings) => {
-        if (active) setRecentBookings([...bookings].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 5));
+    getBookingsDashboard()
+      .then((result) => {
+        if (active) {
+          setSummary(result.summary);
+          setRecentBookings([...result.bookings].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 5));
+        }
       })
       .catch((error: unknown) => {
         if (active) setBookingsError(error instanceof Error ? error.message : "Reservasi terbaru gagal dimuat.");
@@ -83,9 +88,9 @@ export default function Dashboard() {
           </section>
 
           <section className="mt-8 grid gap-4 md:grid-cols-3">
-            <SummaryCard icon={<CalendarClock className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value="0" label="Total Bookings Mendatang" />
-            <SummaryCard icon={<Building2 className="size-6" />} iconClassName="bg-[#ecf8ef] text-[#2d7b46]" value="5" label="Total Ruangan" />
-            <SummaryCard icon={<BadgeCheck className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value="5" label="Total Ruangan Aktif" />
+            <SummaryCard icon={<CalendarClock className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value={summary?.totalUpcomingBookings ?? "–"} label="Total Booking Mendatang" />
+            <SummaryCard icon={<Building2 className="size-6" />} iconClassName="bg-[#ecf8ef] text-[#2d7b46]" value={summary?.totalRooms ?? "–"} label="Total Ruangan" />
+            <SummaryCard icon={<BadgeCheck className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value={summary?.totalActiveRooms ?? "–"} label="Total Ruangan Aktif" />
           </section>
 
           <Card className="mt-8 overflow-hidden rounded-2xl border-slate-200 py-0">
@@ -156,7 +161,7 @@ export default function Dashboard() {
   );
 }
 
-function SummaryCard({ icon, iconClassName, value, label }: { icon: ReactNode; iconClassName: string; value: string; label: string }) {
+function SummaryCard({ icon, iconClassName, value, label }: { icon: ReactNode; iconClassName: string; value: string | number; label: string }) {
   return (
     <Card className="flex-row items-center gap-5 rounded-2xl border-slate-200 px-6 py-7">
       <span className={`grid size-14 shrink-0 place-items-center rounded-2xl ${iconClassName}`}>{icon}</span>

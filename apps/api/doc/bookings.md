@@ -107,11 +107,16 @@ Status: `200 OK`
         "locations": "Gedung A lantai 2"
       }
     }
-  ]
+  ],
+  "summary": {
+    "totalUpcomingBookings": 3,
+    "totalRooms": 12,
+    "totalActiveRooms": 10
+  }
 }
 ```
 
-Daftar diurutkan berdasarkan `startAt` naik.
+Daftar diurutkan berdasarkan `startAt` naik. `summary.totalUpcomingBookings` menghitung booking berstatus `CONFIRMED` dengan `startAt` setelah waktu saat ini. `summary.totalRooms` menghitung seluruh ruangan dan `summary.totalActiveRooms` menghitung ruangan dengan `isActive: true`.
 
 ### Error
 

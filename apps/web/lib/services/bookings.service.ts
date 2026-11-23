@@ -1,8 +1,10 @@
 import axios from "axios";
 import {
+  bookingsDashboardResponseSchema,
   bookingsResponseSchema,
   cancelBookingResponseSchema,
   type Booking,
+  type BookingsDashboardSummary,
   myBookingsResponseSchema,
   type MyBooking,
 } from "@repo/shared/schemas/bookings.schema";
@@ -10,6 +12,8 @@ import {
 import axiosInstance from "@/lib/axios";
 
 type ApiError = { message?: string | string[] };
+
+export type BookingsDashboardData = { bookings: Booking[]; summary: BookingsDashboardSummary };
 
 function normalizeError(error: unknown, fallback: string): Error {
   if (axios.isAxiosError<ApiError>(error)) {
@@ -30,6 +34,17 @@ export async function getAllBookings(): Promise<Booking[]> {
     return validation.data.bookings;
   } catch (error) {
     throw normalizeError(error, "Daftar booking gagal dimuat. Silakan coba lagi.");
+  }
+}
+
+export async function getBookingsDashboard(): Promise<BookingsDashboardData> {
+  try {
+    const response = await axiosInstance.get<unknown>("/bookings");
+    const validation = bookingsDashboardResponseSchema.safeParse(response.data);
+    if (!validation.success) throw new Error("Data ringkasan booking dari server tidak sesuai format.");
+    return validation.data;
+  } catch (error) {
+    throw normalizeError(error, "Ringkasan booking gagal dimuat. Silakan coba lagi.");
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { ArrowLeft, CheckCircle2, Clock3, LoaderCircle, MapPin, Users, XCircle } from "lucide-react";
 import Image from "next/image";
+import { Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -52,6 +53,14 @@ function formatTimeInput(value: string) {
 }
 
 export default function RoomDetailPage() {
+  return (
+    <Suspense fallback={<RoomPageShell><Card className="mt-7 flex min-h-64 items-center justify-center rounded-2xl border-slate-200 text-slate-500"><LoaderCircle className="mr-2 size-4 animate-spin" />Memuat detail ruangan…</Card></RoomPageShell>}>
+      <RoomDetailContent />
+    </Suspense>
+  );
+}
+
+function RoomDetailContent() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
   const [rooms, setRooms] = useState<Room[]>([]);

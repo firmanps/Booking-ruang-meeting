@@ -92,7 +92,7 @@ export default function ProfilePage() {
       <div className="min-h-svh w-full min-w-0 overflow-x-hidden bg-[#f7f9ff] text-[#121a33]">
         <PageHeader userInitials={initials || "U"} />
 
-        <main className="mx-auto w-full min-w-0 max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 xl:px-10">
+        <main className="mx-auto w-full min-w-0 max-w-360 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 xl:px-10">
           <section className="mb-7 sm:mb-9">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#6683b8]">Akun Anda</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Profil</h1>

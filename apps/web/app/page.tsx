@@ -114,7 +114,7 @@ export default function Home() {
 
       <aside
         aria-label="Menu perangkat kecil"
-        className={`fixed top-0 right-0 z-[60] h-[100dvh] w-[min(82vw,320px)] border-l border-white/60 bg-white/90 p-5 shadow-[-20px_0_50px_rgba(15,23,42,0.18)] backdrop-blur-2xl transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed top-0 right-0 z-60 h-dvh w-[min(82vw,320px)] border-l border-white/60 bg-white/90 p-5 shadow-[-20px_0_50px_rgba(15,23,42,0.18)] backdrop-blur-2xl transition-transform duration-300 ease-out md:hidden ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -158,17 +158,17 @@ export default function Home() {
 
       <main>
         <section className="bg-[#17386f] text-white">
-          <div className="mx-auto grid max-w-[1680px] gap-8 px-4 py-10 sm:gap-10 sm:px-8 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center xl:px-12 xl:py-14">
-            <div className="max-w-[760px]">
+          <div className="mx-auto grid max-w-420 gap-8 px-4 py-10 sm:gap-10 sm:px-8 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center xl:px-12 xl:py-14">
+            <div className="max-w-190">
               <div className="mb-6 inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-[#91c9ff] sm:mb-7 sm:px-4 sm:text-sm">
                 <Sparkles className="size-4" />
                 Sistem Reservasi Ruang Rapat Kantor
               </div>
 
-              <h1 className="max-w-[720px] text-[40px] font-bold leading-[1.04] tracking-[-0.045em] sm:text-5xl lg:text-[56px] xl:text-[64px]">
+              <h1 className="max-w-180 text-[40px] font-bold leading-[1.04] tracking-[-0.045em] sm:text-5xl lg:text-[56px] xl:text-[64px]">
                 Pesan ruang rapat <span className="text-[#32aef3]">tanpa bentrok</span>, tanpa ribet.
               </h1>
-              <p className="mt-6 max-w-[650px] text-base leading-7 text-[#c0cee8] sm:mt-7 sm:text-lg sm:leading-8 lg:text-xl">
+              <p className="mt-6 max-w-162.5 text-base leading-7 text-[#c0cee8] sm:mt-7 sm:text-lg sm:leading-8 lg:text-xl">
                 MeetSpace membantu seluruh karyawan melihat ketersediaan ruangan secara real-time, memesan jadwal dalam hitungan detik, dan menghindari tabrakan jadwal semuanya dalam satu aplikasi yang cepat.
               </p>
 
@@ -178,7 +178,7 @@ export default function Home() {
                 </Button>
               </div>
 
-              <div className="mt-10 grid max-w-[620px] grid-cols-3 divide-x divide-white/15 sm:mt-12">
+              <div className="mt-10 grid max-w-155 grid-cols-3 divide-x divide-white/15 sm:mt-12">
                 <div className="pr-2 sm:pr-5">
                   <p className="text-xs text-[#91a6ce] sm:text-sm">Ruangan Aktif</p>
                   <p className="mt-2 text-xl font-bold sm:text-2xl">N/A</p>
@@ -193,7 +193,7 @@ export default function Home() {
             </div>
 
             <Card className="overflow-hidden rounded-2xl border-0 bg-[#203d70] py-0 text-white shadow-2xl shadow-slate-950/20">
-              <div className="relative h-[240px] sm:h-[380px] lg:h-[360px] xl:h-[400px]">
+              <div className="relative h-60 sm:h-95 lg:h-90 xl:h-100">
                 <Image src="/room4.webp" alt="Ruangan rapat dengan fasilitas presentasi" fill priority className="object-cover" sizes="(max-width: 1024px) 100vw, 45vw" />
               </div>
             </Card>
@@ -201,7 +201,7 @@ export default function Home() {
         </section>
 
         <section id="fitur" className="px-4 py-14 sm:px-8 sm:py-20 xl:px-12">
-          <div className="mx-auto max-w-[1680px]">
+          <div className="mx-auto max-w-420">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Semua yang dibutuhkan tim Anda</h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-slate-500 sm:text-lg sm:leading-8">Dirancang untuk ritme kerja kantor modern — dari sprint planning mingguan hingga rapat direksi bulanan.</p>
 
@@ -225,7 +225,7 @@ export default function Home() {
         </section>
 
         <section id="ruangan" className="border-y border-slate-200/70 bg-white px-4 py-14 sm:px-8 sm:py-20 xl:px-12">
-          <div className="mx-auto max-w-[1680px]">
+          <div className="mx-auto max-w-420">
             <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
               <div>
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ruangan siap digunakan</h2>
@@ -268,7 +268,7 @@ export default function Home() {
         </section>
 
         <section id="alur" className="scroll-mt-28 px-4 py-14 sm:px-8 sm:py-20 xl:px-12">
-          <div className="mx-auto max-w-[1680px]">
+          <div className="mx-auto max-w-420">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Tiga langkah, jadwal beres</h2>
             <p className="mt-4 text-lg text-slate-500">Proses pemesanan yang cepat tanpa bolak-balik email.</p>
 
@@ -287,7 +287,7 @@ export default function Home() {
         </section>
 
         <section className="px-4 pb-14 sm:px-8 sm:pb-20 xl:px-12">
-          <div className="mx-auto max-w-[1680px] rounded-3xl bg-[#17386f] px-5 py-12 text-center text-white sm:px-12 sm:py-16">
+          <div className="mx-auto max-w-420 rounded-3xl bg-[#17386f] px-5 py-12 text-center text-white sm:px-12 sm:py-16">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Siap merapikan jadwal rapat kantor?</h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#bfd0eb]">Bergabung bersama rekan-rekan Anda di MeetSpace dan rasakan pemesanan ruangan yang transparan untuk semua tim.</p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -303,7 +303,7 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex min-h-24 max-w-[1680px] flex-col items-center justify-between gap-4 px-4 py-8 text-center text-xs text-slate-500 sm:flex-row sm:px-8 sm:text-left sm:text-sm xl:px-12">
+        <div className="mx-auto flex min-h-24 max-w-420 flex-col items-center justify-between gap-4 px-4 py-8 text-center text-xs text-slate-500 sm:flex-row sm:px-8 sm:text-left sm:text-sm xl:px-12">
           <Link href="/" className="flex items-center gap-2 font-bold text-slate-900">
             <span className="grid size-9 place-items-center overflow-hidden rounded-lg bg-[#edf3ff]">
               <Image src="/logo.webp" alt="" width={36} height={36} className="size-full object-contain" />

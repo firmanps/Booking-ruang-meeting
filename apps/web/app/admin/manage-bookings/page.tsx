@@ -96,7 +96,7 @@ export default function ManageBookingsPage() {
           </Card>
 
           <Card className="mt-6 max-w-full overflow-hidden rounded-2xl border-slate-200 py-0">
-            <Table className="min-w-[880px]">
+            <Table className="min-w-220">
               <TableHeader className="bg-[#fafbfc]">
                 <TableRow className="border-slate-200">
                   <TableHead className="h-14 min-w-56 px-6">Karyawan / Email</TableHead>

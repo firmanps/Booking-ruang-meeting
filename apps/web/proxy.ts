@@ -1,35 +1,41 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5555").replace(/\/+$/, "");
+type UserRole = "ADMIN" | "EMPLOYEE";
+type AuthCheckResult = { status: "ok"; role: UserRole | null } | { status: "unauthorized" | "unavailable" };
+
+const pendingAuthChecks = new Map<string, Promise<AuthCheckResult>>();
 
 const employeeRoutes = ["/dashboard", "/bookings", "/rooms"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isAuthPage = pathname === "/login" || pathname === "/register";
   const requiredRole = pathname.startsWith("/admin")
     ? "ADMIN"
     : employeeRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
       ? "EMPLOYEE"
       : null;
 
-  if (!requiredRole) return NextResponse.next();
+  if (!requiredRole && !isAuthPage) return NextResponse.next();
 
   const accessToken = request.cookies.get("accessToken")?.value;
-  if (!accessToken) return redirectToLogin(request);
+  if (!accessToken) return isAuthPage ? NextResponse.next() : redirectToLogin(request);
 
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/me`, {
-      headers: { cookie: `accessToken=${accessToken}` },
-      cache: "no-store",
-    });
+    const authCheck = await checkAccessToken(accessToken);
+    if (authCheck.status !== "ok") {
+      if (authCheck.status === "unauthorized") return isAuthPage ? NextResponse.next() : redirectToLogin(request);
+      return authServiceUnavailable();
+    }
 
-    if (response.status === 401) return redirectToLogin(request);
-    if (!response.ok) return authServiceUnavailable();
+    const role = authCheck.role;
 
-    const payload: unknown = await response.json();
-    const role = getRole(payload);
-
-    if (!role) return redirectToLogin(request);
+    if (!role) return isAuthPage ? NextResponse.next() : redirectToLogin(request);
+    if (isAuthPage) {
+      const destination = role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
+      return NextResponse.redirect(new URL(destination, request.url));
+    }
     if (role !== requiredRole) {
       const destination = role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
       return NextResponse.redirect(new URL(destination, request.url));
@@ -41,7 +47,29 @@ export async function proxy(request: NextRequest) {
   }
 }
 
-function getRole(payload: unknown): "ADMIN" | "EMPLOYEE" | null {
+function checkAccessToken(accessToken: string): Promise<AuthCheckResult> {
+  const existing = pendingAuthChecks.get(accessToken);
+  if (existing) return existing;
+
+  const request = fetch(`${API_BASE_URL}/auth/me`, {
+    headers: { cookie: `accessToken=${accessToken}` },
+    cache: "no-store",
+  })
+    .then(async (response): Promise<AuthCheckResult> => {
+      if (response.status === 401) return { status: "unauthorized" };
+      if (!response.ok) return { status: "unavailable" };
+      return { status: "ok", role: getRole(await response.json()) };
+    })
+    .catch((): AuthCheckResult => ({ status: "unavailable" }))
+    .finally(() => {
+      if (pendingAuthChecks.get(accessToken) === request) pendingAuthChecks.delete(accessToken);
+    });
+
+  pendingAuthChecks.set(accessToken, request);
+  return request;
+}
+
+function getRole(payload: unknown): UserRole | null {
   if (typeof payload !== "object" || payload === null || !("user" in payload)) return null;
 
   const user = payload.user;
@@ -59,5 +87,5 @@ function authServiceUnavailable() {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/bookings/:path*", "/rooms/:path*"],
+  matcher: ["/login", "/register", "/admin/:path*", "/dashboard/:path*", "/bookings/:path*", "/rooms/:path*"],
 };

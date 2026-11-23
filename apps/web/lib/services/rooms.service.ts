@@ -9,6 +9,7 @@ import {
 } from "@repo/shared/schemas/rooms.schema";
 
 import axiosInstance from "@/lib/axios";
+import { getCachedApiRequest, invalidateApiCache } from "@/lib/api-cache";
 
 type ApiError = { message?: string | string[] };
 
@@ -25,9 +26,16 @@ function normalizeError(error: unknown, fallback: string): Error {
 
 export async function getRooms(): Promise<Room[]> {
   try {
-    const response = await axiosInstance.get<unknown>("/rooms");
-    const validation = roomsResponseSchema.safeParse(response.data);
-    if (!validation.success) throw new Error("Data ruangan dari server tidak sesuai format.");
+    const data = await getCachedApiRequest(
+      "rooms:list",
+      async () => (await axiosInstance.get<unknown>("/rooms")).data,
+      15_000,
+    );
+    const validation = roomsResponseSchema.safeParse(data);
+    if (!validation.success) {
+      invalidateApiCache("rooms:list");
+      throw new Error("Data ruangan dari server tidak sesuai format.");
+    }
     return validation.data.rooms;
   } catch (error) {
     throw normalizeError(error, "Daftar ruangan gagal dimuat. Silakan coba lagi.");
@@ -39,6 +47,7 @@ export async function createRoom(data: CreateRoomInput): Promise<Room> {
     const response = await axiosInstance.post<unknown>("/rooms", data);
     const validation = roomResponseSchema.safeParse(response.data);
     if (!validation.success) throw new Error("Data ruangan dari server tidak sesuai format.");
+    invalidateApiCache("rooms:");
     return validation.data.room;
   } catch (error) {
     throw normalizeError(error, "Ruangan gagal ditambahkan. Silakan coba lagi.");
@@ -50,6 +59,7 @@ export async function updateRoom(id: string, data: UpdateRoomInput): Promise<Roo
     const response = await axiosInstance.patch<unknown>(`/rooms/${id}`, data);
     const validation = roomResponseSchema.safeParse(response.data);
     if (!validation.success) throw new Error("Data ruangan dari server tidak sesuai format.");
+    invalidateApiCache("rooms:");
     return validation.data.room;
   } catch (error) {
     throw normalizeError(error, "Ruangan gagal diperbarui. Silakan coba lagi.");
@@ -61,6 +71,8 @@ export async function deleteRoom(id: string): Promise<string> {
     const response = await axiosInstance.delete<unknown>(`/rooms/${id}`);
     const validation = deleteRoomResponseSchema.safeParse(response.data);
     if (!validation.success) throw new Error("Respons penghapusan ruangan tidak sesuai format.");
+    invalidateApiCache("rooms:");
+    invalidateApiCache("bookings:");
     return validation.data.message;
   } catch (error) {
     throw normalizeError(error, "Ruangan gagal dihapus. Silakan coba lagi.");

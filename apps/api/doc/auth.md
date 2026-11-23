@@ -6,6 +6,7 @@
 |---|---|---|---|
 | POST | `/auth/register` | Tidak | Mendaftarkan akun employee |
 | POST | `/auth/login` | Tidak | Login dan mendapatkan JWT |
+| POST | `/auth/logout` | Tidak | Logout dan menghapus cookie sesi |
 | GET | `/auth/me` | Ya | Mengambil profil pengguna |
 
 ## POST /auth/register
@@ -94,13 +95,27 @@ Status: `201 Created`
 Endpoint juga menyetel cookie:
 
 ```text
-accessToken=<jwt>; HttpOnly; SameSite=Lax; Max-Age=3600
+accessToken=<jwt>; HttpOnly; SameSite=Lax; Path=/; Max-Age=3600
 ```
 
 ### Error
 
 - `400 Bad Request` — input tidak valid.
 - `401 Unauthorized` — email atau password salah.
+
+## POST /auth/logout
+
+Menghapus cookie `accessToken`. Endpoint ini tidak memerlukan autentikasi sehingga tetap dapat dipanggil ketika token sudah kedaluwarsa.
+
+### Response
+
+Status: `201 Created`
+
+```json
+{
+  "message": "Logout berhasil"
+}
+```
 
 ## GET /auth/me
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { CalendarDays, CheckCircle2, LoaderCircle, X, XCircle } from "lucide-react";
+import { CalendarDays, CheckCircle2, LoaderCircle, Search, X, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import PageHeader from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Booking } from "@repo/shared/schemas/bookings.schema";
@@ -30,6 +31,7 @@ export default function ManageBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("");
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [busyBookingId, setBusyBookingId] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -59,10 +61,18 @@ export default function ManageBookingsPage() {
   }, []);
 
   const filteredBookings = useMemo(() => bookings.filter((booking) => {
+    const query = search.trim().toLowerCase();
+    const matchesSearch = !query || [
+      booking.title,
+      booking.user.name,
+      booking.user.email,
+      booking.rooms.name,
+      booking.rooms.locations,
+    ].some((value) => value.toLowerCase().includes(query));
     const matchesStatus = statusFilter === "all" || booking.status === statusFilter;
     const matchesDate = !dateFilter || getJakartaDate(booking.startAt) === dateFilter;
-    return matchesStatus && matchesDate;
-  }), [bookings, dateFilter, statusFilter]);
+    return matchesSearch && matchesStatus && matchesDate;
+  }), [bookings, dateFilter, search, statusFilter]);
 
   async function cancelBooking(booking: Booking) {
     setBusyBookingId(booking.id);
@@ -87,7 +97,14 @@ export default function ManageBookingsPage() {
           <p className="mt-2 text-base text-[#6683b8] sm:text-lg">Pantau, kelola, dan batalkan seluruh reservasi rapat di gedung.</p>
         </section>
 
-        <Card className="mt-7 grid gap-4 rounded-2xl border-slate-200 px-5 py-5 md:grid-cols-[220px_220px] lg:w-fit">
+        <Card className="mt-7 grid gap-4 rounded-2xl border-slate-200 px-5 py-5 sm:grid-cols-2 xl:grid-cols-[minmax(260px,1fr)_220px_280px]">
+          <div className="space-y-2 sm:col-span-2 xl:col-span-1">
+            <label htmlFor="booking-search" className="text-sm font-medium">Cari Reservasi</label>
+            <div className="relative">
+              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500" />
+              <Input id="booking-search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Judul, karyawan, email, atau ruangan..." className="h-12 bg-white pl-9" />
+            </div>
+          </div>
           <div className="space-y-2">
             <label htmlFor="status-filter" className="text-sm font-medium">Status</label>
             <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value ?? "all")}>
@@ -127,7 +144,7 @@ export default function ManageBookingsPage() {
             </TableRow></TableHeader>
             <TableBody>
               {loading ? <TableRow><TableCell colSpan={6} className="h-36 text-center text-slate-500"><LoaderCircle className="mr-2 inline size-4 animate-spin" />Memuat booking…</TableCell></TableRow>
-                : filteredBookings.length === 0 ? <TableRow><TableCell colSpan={6} className="h-36 text-center text-slate-500">Tidak ada booking yang sesuai filter.</TableCell></TableRow>
+                : filteredBookings.length === 0 ? <TableRow><TableCell colSpan={6} className="h-36 text-center text-slate-500">Tidak ada booking yang cocok dengan pencarian dan filter.</TableCell></TableRow>
                   : filteredBookings.map((booking) => <TableRow key={booking.id} className="h-20 border-slate-200">
                     <TableCell className="max-w-56 px-6">
                       <p className="truncate font-semibold" title={booking.user.name}>{booking.user.name}</p>

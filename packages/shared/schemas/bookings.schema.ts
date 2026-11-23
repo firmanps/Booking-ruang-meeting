@@ -39,8 +39,25 @@ export const cancelBookingResponseSchema = z.object({
     cancelledAt: z.iso.datetime().nullable(), cancelledBy: z.uuid().nullable(),
   }),
 });
+export const roomAvailabilityBookingSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  startAt: z.iso.datetime(),
+  endAt: z.iso.datetime(),
+});
+export const roomAvailabilityResponseSchema = z.object({
+  room: z.object({ id: z.uuid(), name: z.string(), capacity: z.number().int(), facilities: z.string(), locations: z.string(), isActive: z.boolean() }),
+  date: z.string(),
+  timezone: z.string(),
+  bookings: z.array(roomAvailabilityBookingSchema),
+});
+export const createBookingResponseSchema = z.object({
+  id: z.uuid(), roomId: z.uuid(), userId: z.uuid(), title: z.string(),
+  startAt: z.iso.datetime(), endAt: z.iso.datetime(), status: bookingStatusSchema, createdAt: z.iso.datetime(),
+});
 
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
 export type Booking = z.infer<typeof bookingSchema>;
 export type BookingsDashboardSummary = z.infer<typeof bookingsDashboardResponseSchema>["summary"];
 export type MyBooking = z.infer<typeof myBookingSchema>;
+export type RoomAvailabilityBooking = z.infer<typeof roomAvailabilityBookingSchema>;

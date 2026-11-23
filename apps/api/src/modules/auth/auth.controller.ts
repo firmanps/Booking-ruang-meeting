@@ -37,12 +37,27 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: '/',
       maxAge: 60 * 60 * 1000,
     });
     return {
       message: 'Login berhasil',
       user: result.user,
     };
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) response: Response) {
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+    };
+    response.clearCookie('accessToken', cookieOptions);
+    // Hapus juga cookie lama yang mungkin tersimpan dengan path default /auth.
+    response.clearCookie('accessToken', { ...cookieOptions, path: '/auth' });
+    return { message: 'Logout berhasil' };
   }
 
   @UseGuards(JwtAuthGuard)

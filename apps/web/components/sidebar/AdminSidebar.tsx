@@ -11,9 +11,9 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel
 import { logout } from "@/lib/services/auth.service";
 
 const mainMenu = [
-  { label: "Dasbor", href: "/admin/dashboard", icon: LayoutDashboard },
-  { label: "Daftar Ruangan", href: "/admin/rooms", icon: Building2 },
-  { label: "Pemesanan Saya", href: "/admin/bookings", icon: CalendarCheck2 },
+  { label: "Beranda", href: "/admin/dashboard", icon: LayoutDashboard },
+  { label: "Ruangan", href: "/admin/rooms", icon: Building2 },
+  { label: "Reservasi Saya", href: "/admin/bookings", icon: CalendarCheck2 },
 ];
 
 const adminMenu = [

@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
         <div className="relative z-10 px-12 pb-14">
           <p className="max-w-md text-4xl font-semibold leading-tight tracking-tight">Ruang terbaik untuk setiap ide besar.</p>
-          <p className="mt-5 max-w-md text-base leading-7 text-zinc-300">Temukan, reservasi, dan kelola ruang meeting kantor dengan mudah.</p>
+          <p className="mt-5 max-w-md text-base leading-7 text-zinc-300">Cek ketersediaan dan pesan ruang meeting secara mandiri. Cepat, transparan, dan tanpa perlu koordinasi rumit.</p>
         </div>
       </aside>
 

@@ -7,8 +7,8 @@ import PageHeader from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { MyBooking } from "@repo/shared/schemas/bookings.schema";
 import { cancelBooking, getMyBookings } from "@/lib/services/bookings.service";
+import type { MyBooking } from "@repo/shared/schemas/bookings.schema";
 
 type BookingTab = "upcoming" | "history" | "cancelled";
 
@@ -92,20 +92,24 @@ export default function BookingsPage() {
     };
   }, []);
 
-  const visibleBookings = useMemo(() => bookings.filter((booking) => {
-    if (activeTab === "cancelled") return booking.status === "CANCELLED";
-    if (activeTab === "history") return booking.status === "CONFIRMED" && new Date(booking.endAt).getTime() <= now;
-    return booking.status === "CONFIRMED" && new Date(booking.endAt).getTime() > now;
-  }), [activeTab, bookings, now]);
+  const visibleBookings = useMemo(
+    () =>
+      bookings.filter((booking) => {
+        if (activeTab === "cancelled") return booking.status === "CANCELLED";
+        if (activeTab === "history") return booking.status === "CONFIRMED" && new Date(booking.endAt).getTime() <= now;
+        return booking.status === "CONFIRMED" && new Date(booking.endAt).getTime() > now;
+      }),
+    [activeTab, bookings, now],
+  );
 
   async function cancelMyBooking(booking: MyBooking) {
     setBusyBookingId(booking.id);
     setError("");
-    setBookings((current) => current.map((item) => item.id === booking.id ? { ...item, status: "CANCELLED" } : item));
+    setBookings((current) => current.map((item) => (item.id === booking.id ? { ...item, status: "CANCELLED" } : item)));
     try {
       await cancelBooking(booking.id);
     } catch (err) {
-      setBookings((current) => current.map((item) => item.id === booking.id ? { ...item, status: booking.status } : item));
+      setBookings((current) => current.map((item) => (item.id === booking.id ? { ...item, status: booking.status } : item)));
       setError(err instanceof Error ? err.message : "Booking gagal dibatalkan.");
     } finally {
       setBusyBookingId(null);
@@ -130,40 +134,105 @@ export default function BookingsPage() {
         <div className="mt-8 flex w-full items-center rounded-xl border border-slate-200 bg-slate-100 p-1">
           {(["upcoming", "history", "cancelled"] as const).map((tab) => {
             const labels = { upcoming: "Mendatang", history: "Selesai", cancelled: "Dibatalkan" };
-            return <button key={tab} type="button" onClick={() => setActiveTab(tab)} aria-pressed={activeTab === tab} className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${activeTab === tab ? "border border-slate-200/60 bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>{labels[tab]}</button>;
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                aria-pressed={activeTab === tab}
+                className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all ${activeTab === tab ? "border border-slate-200/60 bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+              >
+                {labels[tab]}
+              </button>
+            );
           })}
         </div>
 
-        {error && <div role="alert" className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><span>{error}</span><Button type="button" variant="outline" size="sm" onClick={() => void loadBookings()}>Coba lagi</Button></div>}
+        {error && (
+          <div role="alert" className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <span>{error}</span>
+            <Button type="button" variant="outline" size="sm" onClick={() => void loadBookings()}>
+              Coba lagi
+            </Button>
+          </div>
+        )}
 
         <div className="mt-6 space-y-4">
-          {loading ? <Card className="flex min-h-50 items-center justify-center rounded-2xl border-slate-200 text-slate-500"><LoaderCircle className="mr-2 size-4 animate-spin" />Memuat booking…</Card>
-            : visibleBookings.length === 0 ? <Card className="flex min-h-50 flex-col items-center justify-center rounded-2xl border-slate-200 p-6 text-center"><p className="font-semibold text-slate-700">{emptyState[0]}</p><p className="mt-1 text-sm text-slate-500">{emptyState[1]}</p></Card>
-              : visibleBookings.map((booking) => {
-                const date = getDateParts(booking.startAt);
-                const isCancelled = booking.status === "CANCELLED";
-                const isHistory = activeTab === "history";
-                return <Card key={booking.id} className="flex flex-col gap-4 rounded-2xl border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+          {loading ? (
+            <Card className="flex min-h-50 items-center justify-center rounded-2xl border-slate-200 text-slate-500">
+              <LoaderCircle className="mr-2 size-4 animate-spin" />
+              Memuat booking…
+            </Card>
+          ) : visibleBookings.length === 0 ? (
+            <Card className="flex min-h-50 flex-col items-center justify-center rounded-2xl border-slate-200 p-6 text-center">
+              <p className="font-semibold text-slate-700">{emptyState[0]}</p>
+              <p className="mt-1 text-sm text-slate-500">{emptyState[1]}</p>
+            </Card>
+          ) : (
+            visibleBookings.map((booking) => {
+              const date = getDateParts(booking.startAt);
+              const isCancelled = booking.status === "CANCELLED";
+              const isHistory = activeTab === "history";
+              return (
+                <Card key={booking.id} className="flex flex-col gap-4 rounded-2xl border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
                   <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
                     <div className="flex h-17 w-17 shrink-0 flex-col items-center justify-center rounded-xl border border-slate-100 bg-slate-50">
                       <span className="text-xl font-bold text-slate-900">{date.day}</span>
                       <span className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">{date.month}</span>
                     </div>
                     <div className="min-w-0">
-                      <h3 className="truncate text-lg font-bold text-slate-900" title={booking.title}>{booking.title}</h3>
+                      <h3 className="truncate text-lg font-bold text-slate-900" title={booking.title}>
+                        {booking.title}
+                      </h3>
                       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500">
-                        <span className="flex min-w-0 items-center gap-1.5"><MapPin className="size-3.5 shrink-0" /><span className="truncate" title={`${booking.rooms.name} · ${booking.rooms.locations}`}>{booking.rooms.name} · {booking.rooms.locations}</span></span>
-                        <span className="flex items-center gap-1.5"><Clock className="size-3.5 shrink-0" /><span className="truncate" title={formatSchedule(booking.startAt, booking.endAt)}>{formatSchedule(booking.startAt, booking.endAt)}</span></span>
+                        <span className="flex min-w-0 items-center gap-1.5">
+                          <MapPin className="size-3.5 shrink-0" />
+                          <span className="truncate" title={`${booking.rooms.name} · ${booking.rooms.locations}`}>
+                            {booking.rooms.name} · {booking.rooms.locations}
+                          </span>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="size-3.5 shrink-0" />
+                          <span className="truncate" title={formatSchedule(booking.startAt, booking.endAt)}>
+                            {formatSchedule(booking.startAt, booking.endAt)}
+                          </span>
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-3 sm:self-center">
-                    {isCancelled ? <Badge className="h-8 rounded-full border border-red-200 bg-red-50 px-3 text-red-700"><XCircle className="mr-1.5 size-4" />Dibatalkan</Badge>
-                      : isHistory ? <Badge className="h-8 rounded-full border border-slate-200 bg-slate-100 px-3 text-slate-700"><CheckCircle2 className="mr-1.5 size-4" />Selesai</Badge>
-                        : <><Badge className="h-8 rounded-full border border-emerald-200 bg-emerald-50/50 px-3 text-emerald-700 shadow-none"><CheckCircle2 className="mr-1.5 size-4" />Dikonfirmasi</Badge><Button type="button" variant="outline" disabled={busyBookingId === booking.id} onClick={() => void cancelMyBooking(booking)} className="h-8 rounded-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700">{busyBookingId === booking.id && <LoaderCircle className="size-4 animate-spin" />}Batalkan</Button></>}
+                    {isCancelled ? (
+                      <Badge className="h-8 rounded-full border border-red-200 bg-red-50 px-3 text-red-700">
+                        <XCircle className="mr-1.5 size-4" />
+                        Dibatalkan
+                      </Badge>
+                    ) : isHistory ? (
+                      <Badge className="h-8 rounded-full border border-slate-200 bg-slate-100 px-3 text-slate-700">
+                        <CheckCircle2 className="mr-1.5 size-4" />
+                        Selesai
+                      </Badge>
+                    ) : (
+                      <>
+                        <Badge className="h-8 rounded-full border border-emerald-200 bg-emerald-50/50 px-3 text-emerald-700 shadow-none">
+                          <CheckCircle2 className="mr-1.5 size-4" />
+                          Dikonfirmasi
+                        </Badge>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={busyBookingId === booking.id}
+                          onClick={() => void cancelMyBooking(booking)}
+                          className="h-8 rounded-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        >
+                          {busyBookingId === booking.id && <LoaderCircle className="size-4 animate-spin" />}Batalkan
+                        </Button>
+                      </>
+                    )}
                   </div>
-                </Card>;
-              })}
+                </Card>
+              );
+            })
+          )}
         </div>
       </main>
     </div>

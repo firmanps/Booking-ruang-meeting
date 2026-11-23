@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
@@ -7,12 +8,12 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <aside className="relative hidden overflow-hidden bg-[#17386f] text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(91,183,244,0.22),transparent_34%),linear-gradient(145deg,rgba(32,61,112,0.25),transparent_58%)]" />
         <div className="relative z-10 px-12 pt-10">
-          <div className="flex items-center gap-3 text-lg font-semibold">
+          <Link href="/" aria-label="MeetSpace, kembali ke beranda" className="flex items-center gap-3 text-lg font-semibold">
             <span className="grid size-11 place-items-center overflow-hidden rounded-xl bg-white shadow-sm">
               <Image src="/logo.webp" alt="" width={44} height={44} className="size-full object-contain" />
             </span>
             MeetSpace
-          </div>
+          </Link>
         </div>
 
         <div className="relative z-10 px-12 pb-14">

@@ -40,24 +40,22 @@ export default function LoginForm() {
       router.replace(destination);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Login gagal. Silakan coba lagi.");
+    } finally {
       setIsLoading(false);
     }
   }
 
   return (
     <Card className="w-full max-w-md border-0 shadow-none lg:border lg:shadow-sm">
-      <CardHeader className="pb-2">
-        <div className="mb-7 flex items-center gap-2 text-base font-semibold lg:hidden">
-          <span className="grid size-9 place-items-center overflow-hidden rounded-lg bg-[#edf3ff]">
-            <Image src="/logo.webp" alt="" width={36} height={36} className="size-full object-contain" />
-          </span>
-          MeetSpace
-        </div>
+      <CardHeader className="items-center pb-0 text-center">
+        <Link href="/" aria-label="MeetSpace, kembali ke beranda" className="mx-auto mb-2 grid size-16 place-items-center overflow-hidden rounded-xl bg-[#edf3ff] lg:hidden">
+          <Image src="/logo.webp" alt="MeetSpace" width={64} height={64} className="size-full object-contain" />
+        </Link>
         <CardTitle className="text-2xl">Selamat datang kembali</CardTitle>
         <CardDescription>Masuk untuk mengelola pemesanan ruang meeting Anda.</CardDescription>
       </CardHeader>
 
-      <CardContent className="mt-4">
+      <CardContent className="mt-1">
         <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field>
@@ -89,7 +87,7 @@ export default function LoginForm() {
               </p>
             )}
 
-            <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
+            <Button type="submit" size="lg" className="w-full bg-[#17386f] text-white hover:bg-[#102a56]" disabled={isLoading}>
               {isLoading ? "Memproses..." : "Masuk"}
             </Button>
           </FieldGroup>

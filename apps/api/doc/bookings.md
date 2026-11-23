@@ -138,6 +138,11 @@ Status: `200 OK`
 
 ```json
 {
+  "summary": {
+    "UpcomingBookings": 3,
+    "totalBookings": 6,
+    "BookingsSelesai": 4
+  },
   "bookings": [
     {
       "id": "a3bb189e-8bf9-3888-9912-ace4e6543002",
@@ -159,7 +164,7 @@ Status: `200 OK`
 }
 ```
 
-Daftar diurutkan berdasarkan `startAt` naik.
+Daftar diurutkan berdasarkan `startAt` naik. `summary.UpcomingBookings` menghitung booking milik pengguna yang berstatus `CONFIRMED` dan memiliki `startAt` setelah waktu saat ini. `summary.totalBookings` menghitung semua booking milik pengguna, termasuk yang dibatalkan. `summary.BookingsSelesai` menghitung booking berstatus `CONFIRMED` dengan `endAt` sebelum atau sama dengan waktu saat ini.
 
 ### Error
 
@@ -195,7 +200,7 @@ Status: `200 OK`
 
 ### Error
 
-- `400 Bad Request` — booking sudah dibatalkan.
+- `400 Bad Request` — booking sudah dibatalkan atau waktu booking sudah selesai.
 - `401 Unauthorized` — belum login atau token tidak valid.
 - `403 Forbidden` — employee mencoba membatalkan booking milik pengguna lain.
 - `404 Not Found` — booking tidak ditemukan.

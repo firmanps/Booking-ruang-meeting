@@ -102,15 +102,6 @@ export default function ProfilePage() {
           <div>
             <div className="min-w-0 space-y-5 sm:space-y-6">
               <Card className="rounded-2xl border-slate-200/80 py-0 shadow-sm">
-                <CardHeader className="border-b border-slate-100 px-5 py-5 sm:px-7 sm:py-6">
-                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                    <span className="grid size-9 place-items-center rounded-xl bg-blue-50 text-[#2864d7]">
-                      <UserRound className="size-4" />
-                    </span>
-                    Informasi akun
-                  </CardTitle>
-                  <CardDescription>Data ini diambil langsung dari profil akun Anda.</CardDescription>
-                </CardHeader>
                 <CardContent className="grid min-w-0 gap-5 px-5 py-5 sm:grid-cols-2 sm:px-7 sm:py-6">
                   <ProfileInfo icon={<UserRound />} label="Nama lengkap" value={profile.name} />
                   <ProfileInfo icon={<Mail />} label="Alamat email" value={profile.email} />

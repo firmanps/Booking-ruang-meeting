@@ -38,7 +38,7 @@ export default function BookingsPage() {
   return (
     <div className="min-h-svh w-full min-w-0 overflow-x-hidden bg-[#f7f9ff] text-[#121a33]">
         {/* Header Utama */}
-        <PageHeader date="Senin, 23 November 2026" />
+      <PageHeader />
 
         <main className="w-full min-w-0 px-5 py-8 md:px-8 xl:px-10">
           {/* Judul Halaman */}

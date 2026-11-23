@@ -7,4 +7,28 @@ export const createBookingSchema = z.object({
   title: z.string().trim().min(1).max(50),
 });
 
+export const bookingStatusSchema = z.enum(["CONFIRMED", "CANCELLED"]);
+export const bookingSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  startAt: z.iso.datetime(),
+  endAt: z.iso.datetime(),
+  status: bookingStatusSchema,
+  cancelledAt: z.iso.datetime().nullable(),
+  cancelledBy: z.uuid().nullable(),
+  createdAt: z.iso.datetime(),
+  user: z.object({ id: z.uuid(), name: z.string(), email: z.email(), role: z.enum(["EMPLOYEE", "ADMIN"]) }),
+  rooms: z.object({ id: z.uuid(), name: z.string(), capacity: z.number().int(), locations: z.string() }),
+});
+
+export const bookingsResponseSchema = z.object({ bookings: z.array(bookingSchema) });
+export const cancelBookingResponseSchema = z.object({
+  message: z.string(),
+  booking: z.object({
+    id: z.uuid(), title: z.string(), status: bookingStatusSchema,
+    cancelledAt: z.iso.datetime().nullable(), cancelledBy: z.uuid().nullable(),
+  }),
+});
+
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
+export type Booking = z.infer<typeof bookingSchema>;

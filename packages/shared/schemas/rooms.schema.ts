@@ -8,6 +8,19 @@ export const createRoomSchema = z.object({
   isActive: z.boolean().optional().default(true),
 });
 
+export const roomSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  capacity: z.number().int(),
+  facilities: z.string(),
+  locations: z.string(),
+  isActive: z.boolean(),
+});
+
+export const roomsResponseSchema = z.object({ rooms: z.array(roomSchema) });
+export const roomResponseSchema = z.object({ room: roomSchema, message: z.string().optional(), cancelledBookingsCount: z.number().int().nonnegative().optional() });
+export const deleteRoomResponseSchema = z.object({ message: z.string() });
+
 export const updateRoomSchema = createRoomSchema.partial().refine((data) => Object.keys(data).length > 0, { message: "Minimal satu field harus diisi" });
 
 export const roomsQuerySchema = z.object({
@@ -28,3 +41,4 @@ export type CreateRoomInput = z.infer<typeof createRoomSchema>;
 export type UpdateRoomInput = z.infer<typeof updateRoomSchema>;
 export type RoomsQueryInput = z.infer<typeof roomsQuerySchema>;
 export type RoomAvailabilityQueryInput = z.infer<typeof roomAvailabilityQuerySchema>;
+export type Room = z.infer<typeof roomSchema>;

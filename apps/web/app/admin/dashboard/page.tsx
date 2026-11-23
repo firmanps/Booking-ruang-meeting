@@ -1,11 +1,77 @@
+"use client";
+
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+
 import PageHeader from "@/components/PageHeader";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, BadgeCheck, Building2, CalendarClock, CalendarDays, Search } from "lucide-react";
+import { getAllBookings } from "@/lib/services/bookings.service";
+import { getCurrentProfile } from "@/lib/services/profile.service";
+import type { Booking } from "@repo/shared/schemas/bookings.schema";
+import { ArrowRight, BadgeCheck, Building2, CalendarClock, CalendarDays, CheckCircle2, Clock, LoaderCircle, XCircle } from "lucide-react";
 import type { ReactNode } from "react";
 
+const createdAtFormatter = new Intl.DateTimeFormat("id-ID", {
+  timeZone: "Asia/Jakarta",
+  weekday: "short",
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
 export default function Dashboard() {
+  const [userName, setUserName] = useState("");
+  const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const [bookingsError, setBookingsError] = useState("");
+
+  const loadRecentBookings = useCallback(async () => {
+    setLoadingBookings(true);
+    setBookingsError("");
+    try {
+      const bookings = await getAllBookings();
+      setRecentBookings([...bookings].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 5));
+    } catch (error) {
+      setBookingsError(error instanceof Error ? error.message : "Reservasi terbaru gagal dimuat.");
+    } finally {
+      setLoadingBookings(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    getAllBookings()
+      .then((bookings) => {
+        if (active) setRecentBookings([...bookings].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 5));
+      })
+      .catch((error: unknown) => {
+        if (active) setBookingsError(error instanceof Error ? error.message : "Reservasi terbaru gagal dimuat.");
+      })
+      .finally(() => {
+        if (active) setLoadingBookings(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    getCurrentProfile()
+      .then((profile) => {
+        if (active) setUserName(profile.name);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <main>
       <div className="min-h-svh bg-[#f7f9ff] text-[#121a33]">
@@ -13,51 +79,76 @@ export default function Dashboard() {
 
         <main className="px-5 py-8 md:px-8 xl:px-10">
           <section>
-            <h1 className="text-3xl font-bold tracking-tight sm:text-[40px]">Selamat datang, Dimas</h1>
-            <p className="mt-2 text-base text-[#6683b8] sm:text-lg">Berikut ringkasan aktivitas reservasi ruang rapat Anda hari ini.</p>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-[40px]">Selamat datang{userName ? `, ${userName}` : ""}</h1>
           </section>
 
           <section className="mt-8 grid gap-4 md:grid-cols-3">
-            <SummaryCard icon={<CalendarClock className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value="0" label="Reservasi Menunggu" />
-            <SummaryCard icon={<Building2 className="size-6" />} iconClassName="bg-[#ecf8ef] text-[#2d7b46]" value="5" label="Ruangan Tersedia Saat Ini" />
+            <SummaryCard icon={<CalendarClock className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value="0" label="Total Bookings Mendatang" />
+            <SummaryCard icon={<Building2 className="size-6" />} iconClassName="bg-[#ecf8ef] text-[#2d7b46]" value="5" label="Total Ruangan" />
             <SummaryCard icon={<BadgeCheck className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value="5" label="Total Ruangan Aktif" />
           </section>
-
-          <Card className="mt-8 overflow-hidden rounded-3xl border-0 bg-[#17386f] py-0 text-white shadow-[0_20px_45px_rgba(23,56,111,0.12)]">
-            <div className="px-6 py-8 sm:px-10 sm:py-9">
-              <h2 className="text-2xl font-bold tracking-tight">Butuh ruangan untuk rapat berikutnya?</h2>
-              <p className="mt-3 max-w-xl text-base leading-7 text-[#c0cee8] sm:text-lg">Lihat ketersediaan semua ruangan secara real-time dan pesan dalam beberapa klik.</p>
-              <div className="mt-7 flex max-w-2xl gap-3">
-                <div className="relative flex-1">
-                  <Search className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-slate-400" />
-                  <Input aria-label="Cari ruangan" placeholder="Cari ruangan..." className="h-12 rounded-xl border-0 bg-white pl-12 text-slate-900" />
-                </div>
-                <Button type="button" size="lg" className="hidden h-12 rounded-xl bg-white px-5 text-[#17386f] hover:bg-slate-100 sm:inline-flex">
-                  Cari
-                </Button>
-              </div>
-            </div>
-          </Card>
 
           <Card className="mt-8 overflow-hidden rounded-2xl border-slate-200 py-0">
             <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5 sm:px-8">
               <div>
-                <h2 className="text-xl font-bold">Jadwal Rapat Terdekat Anda</h2>
-                <p className="mt-1 text-sm text-slate-500">Reservasi terkonfirmasi yang akan segera berlangsung.</p>
+                <h2 className="text-xl font-bold">Reservasi Terbaru</h2>
               </div>
-              <Button variant="ghost" className="shrink-0 rounded-xl text-[#2864d7]">
+              <Button nativeButton={false} render={<Link href="/admin/manage-bookings" />} variant="ghost" className="shrink-0 rounded-xl text-[#2864d7]">
                 Lihat Semua
                 <ArrowRight className="size-4" />
               </Button>
             </div>
 
-            <div className="flex min-h-56 flex-col items-center justify-center px-6 py-12 text-center">
-              <span className="grid size-14 place-items-center rounded-2xl bg-[#edf3ff] text-[#2864d7]">
-                <CalendarDays className="size-7" />
-              </span>
-              <p className="mt-4 font-semibold">Belum ada jadwal rapat</p>
-              <p className="mt-1 max-w-md text-sm text-slate-500">Reservasi ruangan yang telah dikonfirmasi akan tampil di sini.</p>
-            </div>
+            {loadingBookings ? (
+              <div className="flex min-h-56 items-center justify-center text-sm text-slate-500">
+                <LoaderCircle className="mr-2 size-4 animate-spin" />
+                Memuat reservasi…
+              </div>
+            ) : bookingsError ? (
+              <div role="alert" className="flex min-h-56 flex-col items-center justify-center gap-3 px-6 py-12 text-center">
+                <p className="text-sm text-red-700">{bookingsError}</p>
+                <Button type="button" variant="outline" size="sm" onClick={() => void loadRecentBookings()}>
+                  Coba lagi
+                </Button>
+              </div>
+            ) : recentBookings.length === 0 ? (
+              <div className="flex min-h-56 flex-col items-center justify-center px-6 py-12 text-center">
+                <span className="grid size-14 place-items-center rounded-2xl bg-[#edf3ff] text-[#2864d7]">
+                  <CalendarDays className="size-7" />
+                </span>
+                <p className="mt-4 font-semibold">Belum ada reservasi ruangan</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-200">
+                {recentBookings.map((booking) => (
+                  <div key={booking.id} className="flex min-w-0 flex-col gap-3 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+                    <div className="min-w-0">
+                      <p className="truncate font-semibold text-slate-900" title={booking.title}>
+                        {booking.title}
+                      </p>
+                      <p className="mt-1 truncate text-sm text-slate-600" title={`${booking.rooms.name} · ${booking.user.name} (${booking.user.email})`}>
+                        {booking.rooms.name} · {booking.user.name} 
+                      </p>
+                      <p className="mt-2 flex items-center gap-1.5 text-xs text-slate-500">
+                        <Clock className="size-3.5" />
+                        Dibuat {createdAtFormatter.format(new Date(booking.createdAt))} WIB
+                      </p>
+                    </div>
+                    {booking.status === "CONFIRMED" ? (
+                      <Badge className="h-7 w-fit shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-3 text-emerald-700">
+                        <CheckCircle2 />
+                        Dikonfirmasi
+                      </Badge>
+                    ) : (
+                      <Badge className="h-7 w-fit shrink-0 rounded-full border border-red-200 bg-red-50 px-3 text-red-700">
+                        <XCircle />
+                        Dibatalkan
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
         </main>
       </div>

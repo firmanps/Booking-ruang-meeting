@@ -3,6 +3,8 @@ import {
   bookingsResponseSchema,
   cancelBookingResponseSchema,
   type Booking,
+  myBookingsResponseSchema,
+  type MyBooking,
 } from "@repo/shared/schemas/bookings.schema";
 
 import axiosInstance from "@/lib/axios";
@@ -24,6 +26,17 @@ export async function getAllBookings(): Promise<Booking[]> {
   try {
     const response = await axiosInstance.get<unknown>("/bookings");
     const validation = bookingsResponseSchema.safeParse(response.data);
+    if (!validation.success) throw new Error("Data booking dari server tidak sesuai format.");
+    return validation.data.bookings;
+  } catch (error) {
+    throw normalizeError(error, "Daftar booking gagal dimuat. Silakan coba lagi.");
+  }
+}
+
+export async function getMyBookings(): Promise<MyBooking[]> {
+  try {
+    const response = await axiosInstance.get<unknown>("/bookings/me");
+    const validation = myBookingsResponseSchema.safeParse(response.data);
     if (!validation.success) throw new Error("Data booking dari server tidak sesuai format.");
     return validation.data.bookings;
   } catch (error) {

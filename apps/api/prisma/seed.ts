@@ -54,7 +54,7 @@ async function main() {
   for (const [name, capacity, facilities, locations] of rooms) {
     await prisma.rooms.upsert({
       where: { id: name },
-      update: { name, capacity, facilities, locations, is_active: true },
+      update: { name, capacity, facilities, locations, isActive: true },
       create: { id: name, name, capacity, facilities, locations },
     });
   }

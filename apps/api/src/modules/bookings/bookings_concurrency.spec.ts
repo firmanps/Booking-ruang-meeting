@@ -15,7 +15,7 @@ jest.mock('@nestjs/config', () => ({
   },
 }));
 
-const CONCURRENCY = 30;
+const CONCURRENCY = 20;
 
 function futureSlot() {
   const start = new Date();
@@ -79,7 +79,7 @@ describe('BookingsService.create - booking concurrency integration', () => {
         capacity: 10,
         facilities: 'Projector, Whiteboard',
         locations: 'Test Floor',
-        is_active: true,
+        isActive: true,
       },
       select: { id: true },
     });
@@ -89,7 +89,7 @@ describe('BookingsService.create - booking concurrency integration', () => {
   });
 
   afterAll(async () => {
-    await prisma.bookings.deleteMany({ where: { room_id: roomId } });
+    await prisma.bookings.deleteMany({ where: { roomId: roomId } });
     await prisma.rooms.delete({ where: { id: roomId } }).catch(() => undefined);
     await prisma.users.delete({ where: { id: userId } }).catch(() => undefined);
     await moduleRef.close();
@@ -97,7 +97,7 @@ describe('BookingsService.create - booking concurrency integration', () => {
 
   it(`hanya satu dari ${CONCURRENCY} request bersamaan yang berhasil`, async () => {
     await prisma.bookings.deleteMany({
-      where: { room_id: roomId },
+      where: { roomId: roomId },
     });
 
     const { startAt, endAt } = futureSlot();
@@ -129,13 +129,15 @@ describe('BookingsService.create - booking concurrency integration', () => {
 
     const confirmedCount = await prisma.bookings.count({
       where: {
-        room_id: roomId,
+        roomId: roomId,
         status: 'CONFIRMED',
-        start_at: new Date(startAt),
-        end_at: new Date(endAt),
+        startAt: new Date(startAt),
+        endAt: new Date(endAt),
       },
     });
 
     expect(confirmedCount).toBe(1);
   });
 });
+
+//pnpm test -- bookings_concurrency.spec.ts

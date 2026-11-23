@@ -23,9 +23,9 @@ export class RoomsService {
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
-        created_at: true,
-        updated_at: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -35,7 +35,7 @@ export class RoomsService {
     };
   }
 
-  async updateRoom(id: string, data: UpdateRoomInput) {
+  async updateRoom(id: string, data: UpdateRoomInput, adminId: string) {
     const existingRoom = await this.prisma.rooms.findUnique({
       where: { id },
     });
@@ -44,31 +44,60 @@ export class RoomsService {
       throw new NotFoundException('Ruangan tidak ditemukan');
     }
 
-    const room = await this.prisma.rooms.update({
-      where: { id },
-      data,
-      select: {
-        id: true,
-        name: true,
-        capacity: true,
-        facilities: true,
-        locations: true,
-        is_active: true,
-        created_at: true,
-        updated_at: true,
-      },
-    });
+    return this.prisma.$transaction(async (tx) => {
+      const room = await tx.rooms.update({
+        where: { id },
+        data,
+        select: {
+          id: true,
+          name: true,
+          capacity: true,
+          facilities: true,
+          locations: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
 
-    return {
-      message: 'Ruangan berhasil diperbarui',
-      room,
-    };
+      let cancelledBookingsCount = 0;
+
+      if (data.isActive === false) {
+        const now = new Date();
+
+        const cancelled = await tx.bookings.updateMany({
+          where: {
+            roomId: id,
+            status: 'CONFIRMED',
+            endAt: { gt: now },
+          },
+          data: {
+            status: 'CANCELLED',
+            cancelledAt: now,
+            cancelledBy: adminId,
+          },
+        });
+
+        cancelledBookingsCount = cancelled.count;
+      }
+
+      return {
+        message:
+          cancelledBookingsCount > 0
+            ? `Ruangan berhasil diperbarui dan ${cancelledBookingsCount} booking dibatalkan`
+            : 'Ruangan berhasil diperbarui',
+        room,
+        cancelledBookingsCount: cancelledBookingsCount,
+      };
+    });
   }
 
   async getRooms(query: RoomsQueryInput) {
     const rooms = await this.prisma.rooms.findMany({
       where: {
-        is_active: true,
+        ...(query.isActive !== undefined
+          ? { isActive: query.isActive }
+          : {}),
         ...(query.minCapacity ? { capacity: { gte: query.minCapacity } } : {}),
       },
       orderBy: { name: 'asc' },
@@ -78,11 +107,33 @@ export class RoomsService {
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
+        isActive: true,
       },
     });
 
     return { rooms };
+  }
+
+  async getRoomById(id: string) {
+    const room = await this.prisma.rooms.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        capacity: true,
+        facilities: true,
+        locations: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!room) {
+      throw new NotFoundException('Ruangan tidak ditemukan');
+    }
+
+    return { room };
   }
 
   async getRoomAvailability(id: string, date: string) {
@@ -98,14 +149,14 @@ export class RoomsService {
     }
 
     const room = await this.prisma.rooms.findFirst({
-      where: { id, is_active: true },
+      where: { id, isActive: true },
       select: {
         id: true,
         name: true,
         capacity: true,
         facilities: true,
         locations: true,
-        is_active: true,
+        isActive: true,
       },
     });
 
@@ -119,17 +170,17 @@ export class RoomsService {
 
     const bookings = await this.prisma.bookings.findMany({
       where: {
-        room_id: id,
+        roomId: id,
         status: 'CONFIRMED',
-        start_at: { lt: end },
-        end_at: { gt: start },
+        startAt: { lt: end },
+        endAt: { gt: start },
       },
-      orderBy: { start_at: 'asc' },
+      orderBy: { startAt: 'asc' },
       select: {
         id: true,
         title: true,
-        start_at: true,
-        end_at: true,
+        startAt: true,
+        endAt: true,
       },
     });
 

@@ -10,22 +10,20 @@ termasuk saat dua orang memesan di detik yang sama.**
 
 ### Backend
 
-1. `POST /auth/register` dan `POST /auth/login` dengan dua role: `employee` dan `admin`. Password di-hash, login menghasilkan token (JWT atau session).
-2. `GET /rooms`: daftar ruangan dengan filter kapasitas minimum (`?minCapacity=6`).
-3. `GET /rooms/:id/availability?date=YYYY-MM-DD`: jadwal booking ruangan pada tanggal tersebut.
-4. `POST /bookings` (harus login): memesan ruangan dengan `roomId`, `startAt`, `endAt`, dan `title`.
-   - Validasi: `endAt` setelah `startAt`, durasi 30 menit sampai 4 jam, di dalam jam kerja 08.00–18.00, dan tidak di masa lalu.
-   - Booking tidak boleh bentrok dengan booking lain di ruangan yang sama, termasuk saat ada beberapa request bersamaan. Jika bentrok, kembalikan error dengan status code yang tepat.
-   5. `GET /bookings/me`: daftar booking milik user yang login.
-5. `DELETE /bookings/:id`: membatalkan booking. Hanya pemilik booking atau admin yang boleh.
-6. Khusus admin: `POST /rooms` dan `PATCH /rooms/:id` untuk menambah dan mengubah ruangan.
-7. Validasi input dan format respons error yang konsisten.
+1.✅`POST /auth/register` dan `POST /auth/login` dengan dua role: `employee` dan `admin`. Password di-hash, login menghasilkan token (JWT atau session).
+2.✅`GET /rooms`: daftar ruangan dengan filter kapasitas minimum (`?minCapacity=6`).
+3.✅`GET /rooms/:id/availability?date=YYYY-MM-DD`: jadwal booking ruangan pada tanggal tersebut.
+4.✅`POST /bookings` (harus login): memesan ruangan dengan `roomId`, `startAt`, `endAt`, dan `title`. - Validasi: `endAt` setelah `startAt`, durasi 30 menit sampai 4 jam, di dalam jam kerja 08.00–18.00, dan tidak di masa lalu. - Booking tidak boleh bentrok dengan booking lain di ruangan yang sama, termasuk saat ada beberapa request bersamaan. Jika bentrok, kembalikan error dengan status code yang tepat.
+5.✅`GET /bookings/me`: daftar booking milik user yang login.
+6.✅`DELETE /bookings/:id`: membatalkan booking. Hanya pemilik booking atau admin yang boleh.
+7.✅Khusus admin: `POST /rooms` dan `PATCH /rooms/:id` untuk menambah dan mengubah ruangan.
+8.✅Validasi input dan format respons error yang konsisten.
 
 ### Database
 
-- PostgreSQL, dengan migrasi dan seed data (minimal 5 ruangan, 2 akun employee, dan 1 akun admin).
-- Tabel minimal: `users`, `rooms`, `bookings`.
-- Waktu disimpan dengan zona waktu yang jelas. Asumsikan kantor berada di zona waktu Asia/Jakarta.
+- ✅PostgreSQL, dengan migrasi dan seed data (minimal 5 ruangan, 2 akun employee, dan 1 akun admin).
+- ✅Tabel minimal: `users`, `rooms`, `bookings`.
+- ✅Waktu disimpan dengan zona waktu yang jelas. Asumsikan kantor berada di zona waktu Asia/Jakarta.
 
 ### Frontend
 
@@ -44,10 +42,10 @@ Sediakan `docker-compose.yml` untuk menjalankan semuanya dengan satu perintah, a
 
 Pilih sesuai kekuatan dan waktumu. Tidak perlu mengerjakan semuanya.
 
-- **Test konkurensi:** integration test yang mengirim 20 request booking bersamaan untuk ruangan dan jam yang sama, dan membuktikan hanya 1 yang berhasil.
+-✅ **Test konkurensi:** integration test yang mengirim 20 request booking bersamaan untuk ruangan dan jam yang sama, dan membuktikan hanya 1 yang berhasil.
+
 - **Pengaman di level database:** mencegah bentrok langsung lewat constraint di PostgreSQL, tidak hanya lewat kode aplikasi.
-- **Booking berulang:** opsi booking mingguan (misalnya setiap Senin selama 4 minggu). Jika salah satu minggu bentrok, tentukan dan jelaskan perilakunya.
-- **CI:** pipeline (GitHub Actions atau GitLab CI) yang menjalankan lint, test, dan build setiap push.
+- **Booking berulang:** opsi booking mingguan (misalnya setiap Senin selama 4 minggu). Jika salah satu minggu bentrok, tentukan dan jelaskan perilakunya. -**CI:** pipeline (GitHub Actions atau GitLab CI) yang menjalankan lint, test, dan build setiap push.
 - **Deploy:** aplikasi bisa diakses di URL publik (VPS, Vercel, Render, Railway, atau lainnya).
 - **Notifikasi:** kirim email konfirmasi booking lewat background job (misalnya BullMQ). Email boleh hanya dicetak ke log.
 

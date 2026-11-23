@@ -22,6 +22,8 @@ export const bookingSchema = z.object({
 });
 
 export const bookingsResponseSchema = z.object({ bookings: z.array(bookingSchema) });
+export const myBookingSchema = bookingSchema.omit({ user: true });
+export const myBookingsResponseSchema = z.object({ bookings: z.array(myBookingSchema) });
 export const cancelBookingResponseSchema = z.object({
   message: z.string(),
   booking: z.object({
@@ -32,3 +34,4 @@ export const cancelBookingResponseSchema = z.object({
 
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
 export type Booking = z.infer<typeof bookingSchema>;
+export type MyBooking = z.infer<typeof myBookingSchema>;

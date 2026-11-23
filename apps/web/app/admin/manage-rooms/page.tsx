@@ -3,9 +3,8 @@
 import { CheckCircle2, Pencil, Plus, Trash2, XCircle } from "lucide-react";
 import { useState } from "react";
 
-import AdminSidebar from "@/components/sidebar/AdminSidebar";
+import PageHeader from "@/components/PageHeader";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -125,14 +124,9 @@ export default function ManageRoomsPage() {
   }
 
   return (
-    <AdminSidebar>
+    <main>
       <div className="min-h-svh bg-[#f7f9ff] text-[#121a33]">
-        <header className="flex h-20 items-center justify-between border-b border-slate-200/80 bg-white px-5 md:px-8 xl:px-10">
-          <p className="text-sm font-medium text-[#6683b8] sm:text-base">Minggu, 22 November 2026</p>
-          <Avatar size="lg" className="relative z-10 size-11 bg-[#17386f] ring-2 ring-white">
-            <AvatarFallback className="bg-[#17386f] text-sm font-bold text-white">DA</AvatarFallback>
-          </Avatar>
-        </header>
+        <PageHeader />
 
         <main className="px-5 py-8 md:px-8 xl:px-10">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -258,7 +252,7 @@ export default function ManageRoomsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </AdminSidebar>
+    </main>
   );
 }
 

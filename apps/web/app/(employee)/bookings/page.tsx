@@ -78,7 +78,7 @@ export default function BookingsPage() {
                     {/* Info Kiri & Tengah */}
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
                       {/* Box Tanggal */}
-                      <div className="flex h-[68px] w-[68px] shrink-0 flex-col items-center justify-center rounded-xl bg-slate-50 border border-slate-100">
+                      <div className="flex h-17 w-17 shrink-0 flex-col items-center justify-center rounded-xl bg-slate-50 border border-slate-100">
                         <span className="text-xl font-bold text-slate-900">{booking.dateDay}</span>
                         <span className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">{booking.dateMonth}</span>
                       </div>
@@ -115,14 +115,14 @@ export default function BookingsPage() {
             )}
 
             {activeTab === "history" && (
-              <Card className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border-slate-200 text-center">
+              <Card className="flex min-h-50 flex-col items-center justify-center rounded-2xl border-slate-200 text-center">
                 <p className="font-semibold text-slate-700">Belum ada riwayat selesai</p>
                 <p className="mt-1 text-sm text-slate-500">Jadwal rapat yang sudah selesai akan muncul di sini.</p>
               </Card>
             )}
 
             {activeTab === "cancelled" && (
-              <Card className="flex min-h-[200px] flex-col items-center justify-center rounded-2xl border-slate-200 text-center">
+              <Card className="flex min-h-50 flex-col items-center justify-center rounded-2xl border-slate-200 text-center">
                 <p className="font-semibold text-slate-700">Belum ada pemesanan dibatalkan</p>
                 <p className="mt-1 text-sm text-slate-500">Riwayat pembatalan rapat Anda akan muncul di sini.</p>
               </Card>

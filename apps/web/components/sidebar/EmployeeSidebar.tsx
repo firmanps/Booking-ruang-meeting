@@ -51,13 +51,13 @@ export default function EmployeeSidebar({ children }: { children?: ReactNode }) 
         "--sidebar-width-icon": "4.5rem",
       } as CSSProperties}
     >
-      <Sidebar side="left" collapsible="icon" className="border-white/10 !bg-[#0b1a2d] text-white [&_[data-slot=sidebar-container]]:!duration-300 [&_[data-slot=sidebar-container]]:!ease-in-out [&_[data-slot=sidebar-gap]]:!duration-300 [&_[data-slot=sidebar-gap]]:!ease-in-out [&_[data-slot=sidebar-inner]]:!bg-[#0b1a2d]">
+      <Sidebar side="left" collapsible="icon" className="border-white/10 bg-[#0b1a2d]! text-white **:data-[slot=sidebar-container]:duration-300! **:data-[slot=sidebar-container]:ease-in-out! **:data-[slot=sidebar-gap]:duration-300! **:data-[slot=sidebar-gap]:ease-in-out! **:data-[slot=sidebar-inner]:bg-[#0b1a2d]!">
         <SidebarHeader className="h-20 shrink-0 flex-row items-center justify-between overflow-visible border-b border-white/10 bg-[#0b1a2d] px-2 py-0 transition-[padding] duration-300 ease-in-out group-data-[collapsible=icon]:px-4">
           <Link href="/dashboard" aria-label="MeetSpace, dashboard karyawan" title="MeetSpace" className="flex min-w-0 items-center rounded-2xl">
             <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white p-1.5 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:p-1">
               <Image src="/logo.webp" alt="" width={48} height={48} className="size-full object-contain" priority />
             </span>
-            <span className="ml-3 block max-w-[160px] overflow-hidden text-lg leading-6 font-bold tracking-tight whitespace-nowrap text-white opacity-100 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
+            <span className="ml-3 block max-w-40 overflow-hidden text-lg leading-6 font-bold tracking-tight whitespace-nowrap text-white opacity-100 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
               MeetSpace
             </span>
           </Link>
@@ -74,9 +74,9 @@ export default function EmployeeSidebar({ children }: { children?: ReactNode }) 
                 const active = pathname === href || pathname.startsWith(`${href}/`);
                 return (
                   <SidebarMenuItem key={href}>
-                    <SidebarMenuButton render={<Link href={href} aria-current={active ? "page" : undefined} />} isActive={active} tooltip={label} size="lg" className="h-14 gap-0 rounded-2xl px-4 text-[17px] font-medium text-[#c0cee8] transition-[width,height,padding,border-radius,background-color,color] duration-300 ease-in-out hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:!size-12 group-data-[collapsible=icon]:!rounded-xl group-data-[collapsible=icon]:!pr-[12px] group-data-[collapsible=icon]:!pl-[16px] group-data-[collapsible=icon]:!py-0 data-active:bg-[#203d70] data-active:text-white data-active:hover:bg-[#203d70]">
+                    <SidebarMenuButton render={<Link href={href} aria-current={active ? "page" : undefined} />} isActive={active} tooltip={label} size="lg" className="h-14 gap-0 rounded-2xl px-4 text-[17px] font-medium text-[#c0cee8] transition-[width,height,padding,border-radius,background-color,color] duration-300 ease-in-out hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:rounded-xl! group-data-[collapsible=icon]:pr-3! group-data-[collapsible=icon]:pl-4! group-data-[collapsible=icon]:py-0! data-active:bg-[#203d70] data-active:text-white data-active:hover:bg-[#203d70]">
                       <Icon className="size-5 shrink-0" strokeWidth={2} />
-                      <span className="ml-3 max-w-[200px] overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
+                      <span className="ml-3 max-w-50 overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
                         {label}
                       </span>
                     </SidebarMenuButton>
@@ -90,9 +90,9 @@ export default function EmployeeSidebar({ children }: { children?: ReactNode }) 
         <SidebarFooter className="border-t border-white/10 bg-[#0b1a2d] px-2 py-3 group-data-[collapsible=icon]:px-3">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton type="button" tooltip="Logout" size="lg" className="h-12 gap-0 rounded-2xl px-4 text-[16px] font-medium text-[#c0cee8] transition-colors hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:!size-12 group-data-[collapsible=icon]:!rounded-xl group-data-[collapsible=icon]:!px-0">
+              <SidebarMenuButton type="button" tooltip="Logout" size="lg" className="h-12 gap-0 rounded-2xl px-4 text-base font-medium text-[#c0cee8] transition-colors hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:rounded-xl! group-data-[collapsible=icon]:px-0!">
                 <LogOut className="size-5 shrink-0" strokeWidth={2} />
-                <span className="ml-3 max-w-[200px] overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
+                <span className="ml-3 max-w-50 overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
                   Logout
                 </span>
               </SidebarMenuButton>
@@ -115,7 +115,7 @@ function EmployeeDesktopToggle() {
   const leftPosition = isCollapsed ? "calc(var(--sidebar-width-icon) - 0.75rem)" : "calc(var(--sidebar-width) - 0.75rem)";
 
   return (
-    <button type="button" onClick={toggleSidebar} className="fixed top-[2.5rem] z-[100] grid size-8 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[#0b1a2d] text-[#c0cee8] shadow-md transition-[left,background-color,color] duration-300 ease-in-out hover:bg-white/10 hover:text-white" style={{ left: leftPosition }} aria-label={isCollapsed ? "Buka sidebar" : "Tutup sidebar"}>
+    <button type="button" onClick={toggleSidebar} className="fixed top-10 z-100 grid size-8 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[#0b1a2d] text-[#c0cee8] shadow-md transition-[left,background-color,color] duration-300 ease-in-out hover:bg-white/10 hover:text-white" style={{ left: leftPosition }} aria-label={isCollapsed ? "Buka sidebar" : "Tutup sidebar"}>
       <ChevronLeft className={`size-5 transition-transform duration-300 ease-in-out ${isCollapsed ? "rotate-180" : "rotate-0"}`} />
     </button>
   );

@@ -246,7 +246,7 @@ export default function RoomsPage() {
                       {/* Wrapper Scrollable untuk geser kiri-kanan */}
                       <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent">
                         {/* Timeline Content (min-width agar bisa di scroll) */}
-                        <div className="relative min-w-[800px]">
+                        <div className="relative min-w-200">
                           {/* Wadah Blok Jadwal */}
                           <div className="relative h-16 w-full rounded-xl bg-slate-50 border border-slate-100 overflow-hidden">
                             {/* Garis Grid Bantuan tiap jam */}
@@ -270,7 +270,7 @@ export default function RoomsPage() {
                                   className="absolute top-2 bottom-2 rounded-lg bg-[#f0f7ff] border border-[#b3d4ff] px-2 py-1 flex flex-col justify-center shadow-sm z-10 overflow-hidden hover:bg-[#e5f0ff] transition-colors cursor-pointer"
                                   style={{ left: `${left}%`, width: `${width}%` }}
                                 >
-                                  <span className="text-[12px] font-bold text-[#1e5eb8] whitespace-nowrap">
+                                  <span className="text-xs font-bold text-[#1e5eb8] whitespace-nowrap">
                                     {booking.startTime} - {booking.endTime}
                                   </span>
                                   <span className="text-[11px] text-[#4b82cc] truncate mt-0.5">{booking.title}</span>
@@ -281,7 +281,7 @@ export default function RoomsPage() {
                             {/* Penunjuk Waktu Merah */}
                             {filteredBookings.length > 0 && (
                               <div
-                                className="absolute top-0 bottom-0 w-[2px] bg-red-500 z-20"
+                                className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-20"
                                 style={{
                                   left: `${((timeToMinutes(filteredBookings[0].startTime) - START_WORK_HOUR * 60) / TOTAL_MINUTES) * 100}%`,
                                 }}

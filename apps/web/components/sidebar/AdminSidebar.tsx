@@ -3,11 +3,12 @@
 import { Building2, CalendarCheck2, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, SlidersHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, type CSSProperties, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, useSidebar } from "@/components/ui/sidebar";
+import { logout } from "@/lib/services/auth.service";
 
 const mainMenu = [
   { label: "Dasbor", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -22,6 +23,23 @@ const adminMenu = [
 
 export default function AdminSidebar({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    setLogoutError("");
+    try {
+      await logout();
+      router.replace("/login");
+      router.refresh();
+    } catch (error) {
+      setLogoutError(error instanceof Error ? error.message : "Logout gagal. Silakan coba lagi.");
+    } finally {
+      setLoggingOut(false);
+    }
+  }
 
   return (
     <SidebarProvider
@@ -63,17 +81,24 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
         </SidebarContent>
 
         <SidebarFooter className="border-t border-white/10 bg-[#0b1a2d] px-2 py-3 group-data-[collapsible=icon]:px-3">
+          {logoutError && (
+            <p role="alert" className="px-3 pb-2 text-xs text-red-300">
+              {logoutError}
+            </p>
+          )}
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 type="button"
+                disabled={loggingOut}
+                onClick={() => void handleLogout()}
                 tooltip="Logout"
                 size="lg"
-                className="h-12 gap-0 rounded-2xl px-4 text-base font-medium text-[#c0cee8] transition-colors hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:rounded-xl! group-data-[collapsible=icon]:px-0!"
+                className="h-12 gap-0 rounded-2xl px-4 text-base font-medium text-[#c0cee8] transition-colors hover:bg-white/5 hover:text-white group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:rounded-xl! group-data-[collapsible=icon]:px-0!"
               >
                 <LogOut className="size-5 shrink-0" strokeWidth={2} />
                 <span className="ml-3 max-w-50 overflow-hidden whitespace-nowrap opacity-100 transition-all duration-300 group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
-                  Logout
+                  {loggingOut ? "Keluar…" : "Logout"}
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

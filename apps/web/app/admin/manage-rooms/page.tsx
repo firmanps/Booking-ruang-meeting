@@ -1,7 +1,7 @@
 "use client";
 
-import { CheckCircle2, LoaderCircle, Pencil, Plus, RefreshCw, Trash2, XCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { CheckCircle2, LoaderCircle, Pencil, Plus, RefreshCw, Search, Trash2, XCircle } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import PageHeader from "@/components/PageHeader";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -21,6 +21,7 @@ export default function ManageRoomsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [busyRoomId, setBusyRoomId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [addOpen, setAddOpen] = useState(false);
@@ -56,15 +57,25 @@ export default function ManageRoomsPage() {
     };
   }, []);
 
+  const filteredRooms = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return rooms;
+
+    return rooms.filter((room) =>
+      [room.name, room.locations, room.facilities, String(room.capacity)]
+        .some((value) => value.toLowerCase().includes(query)),
+    );
+  }, [rooms, search]);
+
   async function addRoom(formData: FormData) {
     const data = roomFormData(formData);
     setSaving(true);
     setError("");
     try {
-      await createRoomRequest(data);
+      const createdRoom = await createRoomRequest(data);
+      setRooms((current) => [createdRoom, ...current]);
       setAddOpen(false);
       setNotice("Ruangan berhasil ditambahkan.");
-      await loadRooms();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ruangan gagal ditambahkan.");
     } finally {
@@ -78,10 +89,10 @@ export default function ManageRoomsPage() {
     setSaving(true);
     setError("");
     try {
-      await updateRoomRequest(editingRoom.id, data);
+      const updatedRoom = await updateRoomRequest(editingRoom.id, data);
+      setRooms((current) => current.map((room) => (room.id === updatedRoom.id ? updatedRoom : room)));
       setEditingRoom(null);
       setNotice("Ruangan berhasil diperbarui.");
-      await loadRooms();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ruangan gagal diperbarui.");
     } finally {
@@ -178,7 +189,14 @@ export default function ManageRoomsPage() {
           </div>
         )}
 
-        <Card className="mt-7 max-w-full overflow-hidden rounded-2xl border-slate-200 py-0">
+        <Card className="mt-7 rounded-2xl border-slate-200 px-4 py-4">
+          <div className="relative max-w-xl">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500" />
+            <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari nama, lokasi, atau fasilitas ruangan..." className="h-11 bg-white pl-9" aria-label="Cari ruangan" />
+          </div>
+        </Card>
+
+        <Card className="mt-5 max-w-full overflow-hidden rounded-2xl border-slate-200 py-0">
           <Table className="min-w-220">
             <TableHeader className="bg-[#fafbfc]">
               <TableRow className="border-slate-200">
@@ -203,8 +221,14 @@ export default function ManageRoomsPage() {
                     Belum ada data ruangan.
                   </TableCell>
                 </TableRow>
+              ) : filteredRooms.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-36 text-center text-slate-500">
+                    Ruangan tidak ditemukan. Coba ubah kata kunci pencarian.
+                  </TableCell>
+                </TableRow>
               ) : (
-                rooms.map((room) => (
+                filteredRooms.map((room) => (
                   <TableRow key={room.id} className="min-h-24 border-slate-200">
                     <TableCell className="px-6 py-5">
                       <p className="font-semibold">{room.name}</p>

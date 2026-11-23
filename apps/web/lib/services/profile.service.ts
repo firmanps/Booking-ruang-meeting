@@ -2,6 +2,7 @@ import axios from "axios";
 import { authUserSchema, type AuthUser } from "@repo/shared/schemas/auth.schema";
 
 import axiosInstance from "@/lib/axios";
+import { getCachedApiRequest, invalidateApiCache } from "@/lib/api-cache";
 
 type ApiError = {
   message?: string | string[];
@@ -16,10 +17,15 @@ export class UnauthorizedProfileError extends Error {
 
 export async function getCurrentProfile(): Promise<AuthUser> {
   try {
-    const response = await axiosInstance.get<{ user: unknown }>("/auth/me");
-    const validation = authUserSchema.safeParse(response.data.user);
+    const data = await getCachedApiRequest(
+      "profile:current",
+      async () => (await axiosInstance.get<{ user: unknown }>("/auth/me")).data,
+      10_000,
+    );
+    const validation = authUserSchema.safeParse(data.user);
 
     if (!validation.success) {
+      invalidateApiCache("profile:current");
       throw new Error("Data profil dari server tidak sesuai format.");
     }
 

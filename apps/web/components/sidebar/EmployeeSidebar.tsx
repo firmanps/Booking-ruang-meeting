@@ -115,7 +115,7 @@ function EmployeeDesktopToggle() {
   const leftPosition = isCollapsed ? "calc(var(--sidebar-width-icon) - 0.75rem)" : "calc(var(--sidebar-width) - 0.75rem)";
 
   return (
-    <button type="button" onClick={toggleSidebar} className="fixed top-10 z-100 grid size-8 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[#0b1a2d] text-[#c0cee8] shadow-md transition-[left,background-color,color] duration-300 ease-in-out hover:bg-white/10 hover:text-white" style={{ left: leftPosition }} aria-label={isCollapsed ? "Buka sidebar" : "Tutup sidebar"}>
+    <button type="button" onClick={toggleSidebar} className="fixed top-10 z-40 grid size-8 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[#0b1a2d] text-[#c0cee8] shadow-md transition-[left,background-color,color] duration-300 ease-in-out hover:bg-white/10 hover:text-white" style={{ left: leftPosition }} aria-label={isCollapsed ? "Buka sidebar" : "Tutup sidebar"}>
       <ChevronLeft className={`size-5 transition-transform duration-300 ease-in-out ${isCollapsed ? "rotate-180" : "rotate-0"}`} />
     </button>
   );
@@ -135,7 +135,7 @@ function EmployeeMobileTrigger() {
   const { isMobile, openMobile, toggleSidebar } = useSidebar();
   if (!isMobile || openMobile) return null;
   return (
-    <div className="fixed right-4 bottom-[max(14px,env(safe-area-inset-bottom))] z-50 md:hidden">
+    <div className="fixed right-4 bottom-[max(14px,env(safe-area-inset-bottom))] z-40 md:hidden">
       <Button type="button" variant="ghost" size="icon" aria-label="Buka menu" onClick={toggleSidebar} className="size-14 rounded-full border border-white/60 bg-white/90 text-[#173b77] shadow-[0_10px_35px_rgba(15,23,42,0.22)] backdrop-blur-xl hover:bg-white hover:text-[#173b77] [&_svg]:size-6">
         <Menu className="size-5" />
       </Button>

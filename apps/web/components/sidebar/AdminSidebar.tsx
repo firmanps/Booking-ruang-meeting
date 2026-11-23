@@ -114,7 +114,7 @@ function DesktopFloatingToggle() {
     <button
       type="button"
       onClick={toggleSidebar}
-      className="fixed top-10 z-100 grid size-8 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[#0b1a2d] text-[#c0cee8] shadow-md transition-[left,background-color,color] duration-300 ease-in-out hover:bg-white/10 hover:text-white"
+      className="fixed top-10 z-40 grid size-8 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[#0b1a2d] text-[#c0cee8] shadow-md transition-[left,background-color,color] duration-300 ease-in-out hover:bg-white/10 hover:text-white"
       style={{ left: leftPosition }}
       aria-label={isCollapsed ? "Buka sidebar" : "Tutup sidebar"}
     >
@@ -139,7 +139,7 @@ function MobileSidebarTrigger() {
   if (!isMobile || openMobile) return null;
 
   return (
-    <div className="fixed right-4 bottom-[max(14px,env(safe-area-inset-bottom))] z-50 md:hidden">
+    <div className="fixed right-4 bottom-[max(14px,env(safe-area-inset-bottom))] z-40 md:hidden">
       <Button
         type="button"
         variant="ghost"

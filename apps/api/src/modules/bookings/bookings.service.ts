@@ -82,7 +82,23 @@ export class BookingsService {
       },
     });
 
-    return { bookings };
+    const now = new Date();
+    const confirmedBookings = bookings.filter(
+      (booking) => booking.status === 'CONFIRMED',
+    );
+
+    return {
+      summary: {
+        UpcomingBookings: confirmedBookings.filter(
+          (booking) => booking.startAt > now,
+        ).length,
+        totalBookings: bookings.length,
+        BookingsSelesai: confirmedBookings.filter(
+          (booking) => booking.endAt <= now,
+        ).length,
+      },
+      bookings,
+    };
   }
 
   async cancel(bookingId: string, userId: string, role: 'EMPLOYEE' | 'ADMIN') {
@@ -92,6 +108,7 @@ export class BookingsService {
         id: true,
         userId: true,
         status: true,
+        endAt: true,
       },
     });
 
@@ -105,6 +122,12 @@ export class BookingsService {
 
     if (booking.status === 'CANCELLED') {
       throw new BadRequestException('Booking sudah dibatalkan');
+    }
+
+    if (booking.endAt <= new Date()) {
+      throw new BadRequestException(
+        'Booking yang sudah selesai tidak dapat dibatalkan',
+      );
     }
 
     const cancelled = await this.prisma.bookings.update({

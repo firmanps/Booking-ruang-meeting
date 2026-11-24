@@ -18,7 +18,11 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const apiBaseUrl = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000").replace(/\/+$/, "");
+  const apiBaseUrl = (
+    process.env.API_INTERNAL_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    "http://localhost:5000"
+  ).replace(/\/+$/, "");
   const response = await fetch(`${apiBaseUrl}/auth/me`, {
     headers: { cookie: `accessToken=${accessToken}` },
     cache: "no-store",

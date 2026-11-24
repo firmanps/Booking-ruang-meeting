@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5555").replace(/\/+$/, "");
+const API_BASE_URL = (
+  process.env.API_INTERNAL_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:5000"
+).replace(/\/+$/, "");
 type UserRole = "ADMIN" | "EMPLOYEE";
 type AuthCheckResult = { status: "ok"; role: UserRole | null } | { status: "unauthorized" | "unavailable" };
 

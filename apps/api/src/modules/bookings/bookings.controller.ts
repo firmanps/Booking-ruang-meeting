@@ -18,11 +18,13 @@ import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/roles.guard';
 import { ZodValidationPipe } from 'src/common/zod-validation.pipe';
 import { BookingsService } from './bookings.service';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @UseGuards(JwtAuthGuard)
   @Post()
   create(
@@ -33,6 +35,7 @@ export class BookingsController {
     return this.bookingsService.create(request.user.sub, body);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get()

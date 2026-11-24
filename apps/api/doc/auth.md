@@ -5,7 +5,7 @@
 | Method | Route | Autentikasi | Deskripsi |
 |---|---|---|---|
 | POST | `/auth/register` | Tidak | Mendaftarkan akun employee |
-| POST | `/auth/login` | Tidak | Login dan mendapatkan JWT |
+| POST | `/auth/login` | Tidak | Login dan membuat sesi JWT |
 | POST | `/auth/logout` | Tidak | Logout dan menghapus cookie sesi |
 | GET | `/auth/me` | Ya | Mengambil profil pengguna |
 
@@ -31,6 +31,8 @@ Content-Type: application/json
 | `name` | string | Wajib; 1-100 karakter |
 | `email` | string | Wajib; email valid; maksimal 100 karakter |
 | `password` | string | Wajib; 8-255 karakter |
+
+Nama dipertahankan sesuai input. Email dinormalisasi menjadi huruf kecil sebelum disimpan dan dicari.
 
 ### Response
 
@@ -97,6 +99,8 @@ Endpoint juga menyetel cookie:
 ```text
 accessToken=<jwt>; HttpOnly; SameSite=Lax; Path=/; Max-Age=3600
 ```
+
+Nilai cookie ini disetel oleh respons; `accessToken` tidak disertakan sebagai field JSON. Cookie berlaku dengan `Max-Age=3600` detik. `Secure` aktif pada lingkungan `production`. Durasi JWT dapat diubah lewat `JWT_EXPIRES_IN`, tetapi masa berlaku cookie saat ini tetap 3600 detik.
 
 ### Error
 

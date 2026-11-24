@@ -35,6 +35,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
       route: routeName,
       statusCode,
       durationMs: Date.now() - startedAt,
+      ip: request.ip,
     });
 
     return next.handle().pipe(

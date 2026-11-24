@@ -7,7 +7,6 @@
       "persistent": true
     },
     "build": {
-      "env": ["DATABASE_URL", "PORT", "JWT_SECRET", "JWT_EXPIRES_IN", "NODE_ENV", "CORS_ORIGINS"],
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },

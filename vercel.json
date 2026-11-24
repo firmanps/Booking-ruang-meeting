@@ -3,7 +3,8 @@
   "services": {
     "api": {
       "root": "apps/api",
-      "framework": "nestjs"
+      "framework": "nestjs",
+      "buildCommand": "pnpm exec prisma generate && pnpm run build"
     },
     "web": {
       "root": "apps/web",

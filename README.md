@@ -332,8 +332,6 @@ Fitur berikut belum tersedia pada versi saat ini:
 - Notifikasi email atau pengingat meeting.
 - Booking berulang.
 - Dashboard analytics yang lebih mendalam.
-- Rate limit pada endpoint autentikasi dan booking.
-
 
 ## Pengembangan dengan Bantuan AI
 

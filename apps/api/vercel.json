@@ -1,3 +1,0 @@
-{
-  "buildCommand": "pnpm --filter @repo/shared build && pnpm exec prisma generate && pnpm exec nest build"
-}

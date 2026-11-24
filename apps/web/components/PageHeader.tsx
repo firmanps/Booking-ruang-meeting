@@ -28,7 +28,7 @@ export default function PageHeader({ userInitials = "DA", showBackButton = false
 
       <div className="flex items-center gap-4">
         {/* Bungkus Avatar dengan Link ke halaman /profile */}
-        <Link href="/profile" className="cursor-pointer hover:opacity-80 transition-opacity">
+        <Link href="/profile" prefetch={true} className="cursor-pointer hover:opacity-80 transition-opacity" aria-label="Buka profil">
           <Avatar className="relative z-10 size-11 bg-[#17386f] ring-2 ring-white">
             <AvatarImage src="/profile.png" alt="Foto profil" />
             <AvatarFallback className="bg-[#17386f] text-sm font-bold text-white">{userInitials}</AvatarFallback>

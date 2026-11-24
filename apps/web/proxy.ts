@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5555").replace(/\/+$/, "");
+const API_BASE_URL = (
+  process.env.API_INTERNAL_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:5000"
+).replace(/\/+$/, "");
 type UserRole = "ADMIN" | "EMPLOYEE";
 type AuthCheckResult = { status: "ok"; role: UserRole | null } | { status: "unauthorized" | "unavailable" };
 
@@ -11,13 +15,14 @@ const employeeRoutes = ["/dashboard", "/bookings", "/rooms"];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname === "/login" || pathname === "/register";
+  const isProfilePage = pathname === "/profile";
   const requiredRole = pathname.startsWith("/admin")
     ? "ADMIN"
     : employeeRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
       ? "EMPLOYEE"
       : null;
 
-  if (!requiredRole && !isAuthPage) return NextResponse.next();
+  if (!requiredRole && !isAuthPage && !isProfilePage) return NextResponse.next();
 
   const accessToken = request.cookies.get("accessToken")?.value;
   if (!accessToken) return isAuthPage ? NextResponse.next() : redirectToLogin(request);
@@ -30,6 +35,11 @@ export async function proxy(request: NextRequest) {
     }
 
     const role = authCheck.role;
+
+    if (isProfilePage) {
+      if (role === "ADMIN" || role === "EMPLOYEE") return NextResponse.next();
+      return redirectToLogin(request);
+    }
 
     if (!role) return isAuthPage ? NextResponse.next() : redirectToLogin(request);
     if (isAuthPage) {
@@ -87,5 +97,5 @@ function authServiceUnavailable() {
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/admin/:path*", "/dashboard/:path*", "/bookings/:path*", "/rooms/:path*"],
+  matcher: ["/login", "/register", "/profile", "/admin/:path*", "/dashboard/:path*", "/bookings/:path*", "/rooms/:path*"],
 };

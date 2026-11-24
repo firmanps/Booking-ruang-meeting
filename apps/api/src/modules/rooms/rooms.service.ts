@@ -95,9 +95,7 @@ export class RoomsService {
   async getRooms(query: RoomsQueryInput) {
     const rooms = await this.prisma.rooms.findMany({
       where: {
-        ...(query.isActive !== undefined
-          ? { isActive: query.isActive }
-          : {}),
+        ...(query.isActive !== undefined ? { isActive: query.isActive } : {}),
         ...(query.minCapacity ? { capacity: { gte: query.minCapacity } } : {}),
       },
       orderBy: { name: 'asc' },

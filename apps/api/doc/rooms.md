@@ -11,7 +11,19 @@
 | PATCH | `/rooms/:id` | Ya | Admin | Memperbarui ruangan |
 | DELETE | `/rooms/:id` | Ya | Admin | Menghapus ruangan |
 
+### Aturan authorization
+
+Authorization admin hanya berlaku untuk endpoint berikut:
+
+- `POST /rooms` — hanya role `ADMIN`.
+- `PATCH /rooms/:id` — hanya role `ADMIN`.
+- `DELETE /rooms/:id` — hanya role `ADMIN`.
+
+Employee tidak memiliki akses ke ketiga endpoint tersebut dan menerima `403 Forbidden`. Endpoint `GET /rooms`, `GET /rooms/:id`, dan `GET /rooms/:id/availability` bersifat publik dan tidak memerlukan token.
+
 ## POST /rooms
+
+**Authorization:** Wajib login dan role harus `ADMIN`. Employee tidak diperbolehkan menambahkan ruangan.
 
 ### Request
 
@@ -183,6 +195,8 @@ Hanya booking berstatus `CONFIRMED` yang dikembalikan.
 
 ## PATCH /rooms/:id
 
+**Authorization:** Wajib login dan role harus `ADMIN`. Employee tidak diperbolehkan memperbarui ruangan.
+
 ### Request
 
 ```http
@@ -202,6 +216,8 @@ Content-Type: application/json
 Minimal satu field harus diisi. Field yang diperbolehkan: `name`, `capacity`, `facilities`, `locations`, dan `isActive`.
 
 Jika `isActive` diubah menjadi `false`, booking aktif mendatang pada ruangan tersebut dibatalkan dalam transaksi yang sama.
+
+Booking mendatang dihitung dari booking berstatus `CONFIRMED` yang memiliki `endAt` setelah waktu pembaruan. Jika tidak ada booking yang dibatalkan, respons tetap menyertakan `cancelledBookingsCount: 0`.
 
 ### Response
 
@@ -232,6 +248,8 @@ Status: `200 OK`
 - `404 Not Found` — ruangan tidak ditemukan.
 
 ## DELETE /rooms/:id
+
+**Authorization:** Wajib login dan role harus `ADMIN`. Employee tidak diperbolehkan menghapus ruangan.
 
 ### Request
 

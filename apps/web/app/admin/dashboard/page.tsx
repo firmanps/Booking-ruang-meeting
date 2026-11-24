@@ -88,7 +88,7 @@ export default function Dashboard() {
           </section>
 
           <section className="mt-8 grid gap-4 md:grid-cols-3">
-            <SummaryCard icon={<CalendarClock className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value={summary?.totalUpcomingBookings ?? "–"} label="Total Booking Mendatang" />
+            <SummaryCard icon={<CalendarClock className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value={summary?.totalUpcomingBookings ?? "–"} label="Reservasi Mendatang" />
             <SummaryCard icon={<Building2 className="size-6" />} iconClassName="bg-[#ecf8ef] text-[#2d7b46]" value={summary?.totalRooms ?? "–"} label="Total Ruangan" />
             <SummaryCard icon={<BadgeCheck className="size-6" />} iconClassName="bg-[#edf3ff] text-[#2864d7]" value={summary?.totalActiveRooms ?? "–"} label="Total Ruangan Aktif" />
           </section>
@@ -132,7 +132,7 @@ export default function Dashboard() {
                         {booking.title}
                       </p>
                       <p className="mt-1 truncate text-sm text-slate-600" title={`${booking.rooms.name} · ${booking.user.name} (${booking.user.email})`}>
-                        {booking.rooms.name} · {booking.user.name} 
+                        {booking.rooms.name} · {booking.user.name}
                       </p>
                       <p className="mt-2 flex items-center gap-1.5 text-xs text-slate-500">
                         <Clock className="size-3.5" />

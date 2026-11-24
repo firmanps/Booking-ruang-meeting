@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CommonModule } from './common/common.module';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 import { HttpLoggingInterceptor } from './common/http-logging.interceptor';
@@ -17,6 +18,7 @@ import { RoomsModule } from './modules/rooms/rooms.module';
     AuthModule,
     RoomsModule,
     BookingsModule,
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
   ],
   providers: [
     {
@@ -26,6 +28,11 @@ import { RoomsModule } from './modules/rooms/rooms.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpLoggingInterceptor,
+    },
+
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

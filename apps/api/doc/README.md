@@ -8,6 +8,8 @@ Dokumentasi REST API aplikasi MeetSpace — Booking Ruang Meeting Gedung Kantor.
 - **Zona waktu:** `Asia/Jakarta`
 - **Konvensi field:** `camelCase` untuk request, query, response, dan Zod schema
 
+Port default aplikasi adalah `5000` pada konfigurasi `.env` proyek saat ini. Jika variabel `PORT` tidak disetel, kode aplikasi menggunakan fallback `4000`.
+
 ## Autentikasi
 
 - [Auth API](./auth.md)

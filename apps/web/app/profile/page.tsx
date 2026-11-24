@@ -1,80 +1,46 @@
-"use client";
-
 import { Mail, ShieldCheck, UserRound } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import PageHeader from "@/components/PageHeader";
 import AdminSidebar from "@/components/sidebar/AdminSidebar";
 import EmployeeSidebar from "@/components/sidebar/EmployeeSidebar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCurrentProfile, UnauthorizedProfileError } from "@/lib/services/profile.service";
+import { Card, CardContent } from "@/components/ui/card";
 import type { AuthUser } from "@repo/shared/schemas/auth.schema";
 
-export default function ProfilePage() {
-  const router = useRouter();
-  const [profile, setProfile] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [retryCount, setRetryCount] = useState(0);
+export const instant = false;
 
-  useEffect(() => {
-    let isMounted = true;
+export default async function ProfilePage() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
 
-    getCurrentProfile()
-      .then((user) => {
-        if (isMounted) setProfile(user);
-      })
-      .catch((requestError: unknown) => {
-        if (!isMounted) return;
-        if (requestError instanceof UnauthorizedProfileError) {
-          router.replace("/login");
-          return;
-        }
-        setError(requestError instanceof Error ? requestError.message : "Profil gagal dimuat.");
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [retryCount, router]);
-
-  if (isLoading) {
-    return (
-      <main className="grid min-h-svh place-items-center bg-[#f7f9ff] px-5 text-sm font-medium text-slate-500" aria-live="polite">
-        Memuat profil...
-      </main>
-    );
+  if (!accessToken) {
+    redirect("/login");
   }
 
+  const apiBaseUrl = (
+    process.env.API_INTERNAL_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    "http://localhost:5000"
+  ).replace(/\/+$/, "");
+  const response = await fetch(`${apiBaseUrl}/auth/me`, {
+    headers: { cookie: `accessToken=${accessToken}` },
+    cache: "no-store",
+  });
+
+  if (response.status === 401) {
+    redirect("/login");
+  }
+
+  if (!response.ok) {
+    throw new Error("Layanan profil sedang tidak tersedia.");
+  }
+
+  const data = (await response.json()) as { user?: AuthUser };
+  const profile = data.user;
+
   if (!profile) {
-    return (
-      <main className="grid min-h-svh place-items-center bg-[#f7f9ff] px-5">
-        <Card className="w-full max-w-md rounded-2xl border-slate-200">
-          <CardHeader>
-            <CardTitle>Profil tidak dapat dimuat</CardTitle>
-            <CardDescription>{error || "Coba muat ulang data profil Anda."}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              type="button"
-              onClick={() => {
-                setIsLoading(true);
-                setError("");
-                setRetryCount((count) => count + 1);
-              }}
-              className="w-full bg-[#17386f]"
-            >
-              Coba lagi
-            </Button>
-          </CardContent>
-        </Card>
-      </main>
-    );
+    throw new Error("Data profil tidak tersedia.");
   }
 
   const initials = profile.name

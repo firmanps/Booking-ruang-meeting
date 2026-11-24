@@ -32,9 +32,9 @@ import {
 } from "@/components/ui/sidebar";
 
 const employeeMenu = [
-  { label: "Dasbor", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Daftar Ruangan", href: "/rooms", icon: Building2 },
-  { label: "Pemesanan Saya", href: "/bookings", icon: CalendarCheck2 },
+  { label: "Beranda", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Ruangan", href: "/rooms", icon: Building2 },
+  { label: "Reservasi Saya", href: "/bookings", icon: CalendarCheck2 },
 ];
 
 export default function EmployeeSidebar({ children }: { children?: ReactNode }) {

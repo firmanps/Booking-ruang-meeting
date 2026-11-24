@@ -80,18 +80,15 @@ export default function RegisterForm() {
 
   return (
     <Card className="w-full max-w-md border-0 shadow-none lg:border lg:shadow-sm">
-      <CardHeader className="pb-2">
-        <div className="mb-7 flex items-center gap-2 text-base font-semibold lg:hidden">
-          <span className="grid size-9 place-items-center overflow-hidden rounded-lg bg-[#edf3ff]">
-            <Image src="/logo.webp" alt="" width={36} height={36} className="size-full object-contain" />
-          </span>
-          MeetSpace
-        </div>
-        <CardTitle className="text-2xl">Buat akun baru</CardTitle>
-        <CardDescription>Daftar untuk mulai memesan ruang meeting kantor.</CardDescription>
+      <CardHeader className="items-center gap-1 pb-0 text-center">
+        <Link href="/" aria-label="MeetSpace, kembali ke beranda" className="mx-auto mb-2 grid size-16 place-items-center overflow-hidden rounded-xl bg-[#edf3ff] lg:hidden">
+          <Image src="/logo.webp" alt="MeetSpace" width={64} height={64} className="size-full object-contain" />
+        </Link>
+        <CardTitle className="w-full text-center text-2xl">Buat akun baru</CardTitle>
+        <CardDescription className="w-full text-center">Daftar untuk mulai memesan ruang meeting kantor.</CardDescription>
       </CardHeader>
 
-      <CardContent className="mt-4">
+      <CardContent className="mt-0">
         <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field>
@@ -130,7 +127,7 @@ export default function RegisterForm() {
               </p>
             )}
 
-            <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
+            <Button type="submit" size="lg" className="w-full bg-[#17386f] text-white hover:bg-[#102a56]" disabled={isLoading}>
               {isLoading ? "Mendaftarkan..." : "Buat akun"}
             </Button>
           </FieldGroup>

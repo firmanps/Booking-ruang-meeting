@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import type { CreateRoomInput, Room } from "@repo/shared/schemas/rooms.schema";
 import { createRoom as createRoomRequest, deleteRoom as deleteRoomRequest, getRooms, updateRoom as updateRoomRequest } from "@/lib/services/rooms.service";
+import type { CreateRoomInput, Room } from "@repo/shared/schemas/rooms.schema";
 
 export default function ManageRoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -61,10 +61,7 @@ export default function ManageRoomsPage() {
     const query = search.trim().toLowerCase();
     if (!query) return rooms;
 
-    return rooms.filter((room) =>
-      [room.name, room.locations, room.facilities, String(room.capacity)]
-        .some((value) => value.toLowerCase().includes(query)),
-    );
+    return rooms.filter((room) => [room.name, room.locations, room.facilities, String(room.capacity)].some((value) => value.toLowerCase().includes(query)));
   }, [rooms, search]);
 
   async function addRoom(formData: FormData) {
@@ -190,7 +187,7 @@ export default function ManageRoomsPage() {
         )}
 
         <Card className="mt-7 rounded-2xl border-slate-200 px-4 py-4">
-          <div className="relative max-w-xl">
+          <div className="relative max-w-full">
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-500" />
             <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari nama, lokasi, atau fasilitas ruangan..." className="h-11 bg-white pl-9" aria-label="Cari ruangan" />
           </div>

@@ -66,13 +66,17 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    void loadDashboard();
+    const timeoutId = window.setTimeout(() => void loadDashboard(), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [loadDashboard]);
 
   useEffect(() => {
-    setNow(Date.now());
+    const timeoutId = window.setTimeout(() => setNow(Date.now()), 0);
     const intervalId = window.setInterval(() => setNow(Date.now()), 60_000);
-    return () => window.clearInterval(intervalId);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+    };
   }, []);
 
   const upcomingBookings = useMemo(() => {

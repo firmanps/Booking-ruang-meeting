@@ -67,13 +67,17 @@ export default function BookingsPage() {
   }, []);
 
   useEffect(() => {
-    void loadBookings();
+    const timeoutId = window.setTimeout(() => void loadBookings(), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [loadBookings]);
 
   useEffect(() => {
-    setNow(Date.now());
+    const timeoutId = window.setTimeout(() => setNow(Date.now()), 0);
     const intervalId = window.setInterval(() => setNow(Date.now()), 60_000);
-    return () => window.clearInterval(intervalId);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+    };
   }, []);
 
   const visibleBookings = useMemo(() => bookings.filter((booking) => {

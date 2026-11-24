@@ -25,7 +25,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
     const startedAt = Date.now();
 
     // Pakai pola route jika tersedia, supaya ID kontak tidak muncul di log.
-    const route = request.route?.path;
+    const route = (request.route as { path?: string } | undefined)?.path;
     const routeName =
       typeof route === 'string' ? `${request.baseUrl}${route}` : request.path;
 

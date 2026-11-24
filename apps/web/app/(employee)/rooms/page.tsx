@@ -37,7 +37,8 @@ export default function RoomsPage() {
   }, []);
 
   useEffect(() => {
-    void loadRooms();
+    const timeoutId = window.setTimeout(() => void loadRooms(), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [loadRooms]);
 
   const filteredRooms = useMemo(() => {

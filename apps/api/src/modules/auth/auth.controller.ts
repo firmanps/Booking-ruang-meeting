@@ -42,6 +42,9 @@ export class AuthController {
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 1000,
+      ...(process.env.COOKIE_DOMAIN
+        ? { domain: process.env.COOKIE_DOMAIN }
+        : {}),
     });
     return {
       message: 'Login berhasil',

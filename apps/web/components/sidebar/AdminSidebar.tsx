@@ -1,13 +1,36 @@
 "use client";
 
-import { Building2, CalendarCheck2, ChevronLeft, ClipboardList, LayoutDashboard, LogOut, Menu, SlidersHorizontal, X } from "lucide-react";
+import {
+  Building2,
+  CalendarCheck2,
+  ChevronLeft,
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  SlidersHorizontal,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, useSidebar } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { logout } from "@/lib/services/auth.service";
 
 const mainMenu = [
@@ -17,8 +40,16 @@ const mainMenu = [
 ];
 
 const adminMenu = [
-  { label: "Kelola Reservasi", href: "/admin/manage-bookings", icon: ClipboardList },
-  { label: "Kelola Ruangan", href: "/admin/manage-rooms", icon: SlidersHorizontal },
+  {
+    label: "Kelola Reservasi",
+    href: "/admin/manage-bookings",
+    icon: ClipboardList,
+  },
+  {
+    label: "Kelola Ruangan",
+    href: "/admin/manage-rooms",
+    icon: SlidersHorizontal,
+  },
 ];
 
 export default function AdminSidebar({ children }: { children?: ReactNode }) {
@@ -35,7 +66,11 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
       router.replace("/login");
       router.refresh();
     } catch (error) {
-      setLogoutError(error instanceof Error ? error.message : "Logout gagal. Silakan coba lagi.");
+      setLogoutError(
+        error instanceof Error
+          ? error.message
+          : "Logout gagal. Silakan coba lagi.",
+      );
     } finally {
       setLoggingOut(false);
     }
@@ -55,7 +90,6 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
         } as CSSProperties
       }
     >
-      {/* Tambahan: Komponen untuk otomatis menutup sidebar mobile saat pindah halaman */}
       <SidebarAutoCloser />
 
       <Sidebar
@@ -64,9 +98,21 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
         className="border-white/10 bg-[#0b1a2d]! text-white **:data-[slot=sidebar-container]:duration-300! **:data-[slot=sidebar-container]:ease-in-out! **:data-[slot=sidebar-gap]:duration-300! **:data-[slot=sidebar-gap]:ease-in-out! **:data-[slot=sidebar-inner]:bg-[#0b1a2d]!"
       >
         <SidebarHeader className="h-20 shrink-0 flex-row items-center justify-between overflow-visible border-b border-white/10 bg-[#0b1a2d] px-2 py-0 transition-[padding] duration-300 ease-in-out group-data-[collapsible=icon]:px-4">
-          <Link href="/admin/dashboard" aria-label="MeetSpace, dashboard admin" title="MeetSpace" className="flex min-w-0 items-center rounded-2xl">
+          <Link
+            href="/admin/dashboard"
+            aria-label="MeetSpace, dashboard admin"
+            title="MeetSpace"
+            className="flex min-w-0 items-center rounded-2xl"
+          >
             <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white p-1.5 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:size-10 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:p-1">
-              <Image src="/logo.webp" alt="" width={48} height={48} className="size-full object-contain" priority />
+              <Image
+                src="/logo.webp"
+                alt=""
+                width={48}
+                height={48}
+                className="size-full object-contain"
+                priority
+              />
             </span>
             <span className="ml-3 block max-w-40 overflow-hidden text-lg leading-6 font-bold tracking-tight whitespace-nowrap text-white opacity-100 transition-all duration-300 ease-in-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
               MeetSpace
@@ -76,8 +122,16 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
         </SidebarHeader>
 
         <SidebarContent className="gap-2 overflow-x-hidden bg-[#0b1a2d] px-2 py-5 transition-[padding] duration-300 ease-in-out group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-4">
-          <MenuSection title="Menu Utama" items={mainMenu} pathname={pathname} />
-          <MenuSection title="Administrasi" items={adminMenu} pathname={pathname} />
+          <MenuSection
+            title="Menu Utama"
+            items={mainMenu}
+            pathname={pathname}
+          />
+          <MenuSection
+            title="Administrasi"
+            items={adminMenu}
+            pathname={pathname}
+          />
         </SidebarContent>
 
         <SidebarFooter className="border-t border-white/10 bg-[#0b1a2d] px-2 py-3 group-data-[collapsible=icon]:px-3">
@@ -108,7 +162,9 @@ export default function AdminSidebar({ children }: { children?: ReactNode }) {
 
       <DesktopFloatingToggle />
       <MobileSidebarTrigger />
-      <SidebarInset className="min-h-svh w-full min-w-0 overflow-x-hidden bg-[#f7f9ff]">{children}</SidebarInset>
+      <SidebarInset className="min-h-svh w-full min-w-0 overflow-x-hidden bg-[#f7f9ff]">
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }
@@ -133,7 +189,9 @@ function DesktopFloatingToggle() {
   if (isMobile) return null;
 
   const isCollapsed = state === "collapsed";
-  const leftPosition = isCollapsed ? "calc(var(--sidebar-width-icon) - 0.75rem)" : "calc(var(--sidebar-width) - 0.75rem)";
+  const leftPosition = isCollapsed
+    ? "calc(var(--sidebar-width-icon) - 0.75rem)"
+    : "calc(var(--sidebar-width) - 0.75rem)";
 
   return (
     <button
@@ -143,7 +201,9 @@ function DesktopFloatingToggle() {
       style={{ left: leftPosition }}
       aria-label={isCollapsed ? "Buka sidebar" : "Tutup sidebar"}
     >
-      <ChevronLeft className={`size-5 transition-transform duration-300 ease-in-out ${isCollapsed ? "rotate-180" : "rotate-0"}`} />
+      <ChevronLeft
+        className={`size-5 transition-transform duration-300 ease-in-out ${isCollapsed ? "rotate-180" : "rotate-0"}`}
+      />
     </button>
   );
 }
@@ -153,7 +213,14 @@ function MobileCloseButton() {
   if (!isMobile) return null;
 
   return (
-    <Button type="button" variant="ghost" size="icon" aria-label="Tutup menu" onClick={() => setOpenMobile(false)} className="size-10 shrink-0 rounded-xl text-[#c0cee8] hover:bg-white/10 hover:text-white [&_svg]:size-5">
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      aria-label="Tutup menu"
+      onClick={() => setOpenMobile(false)}
+      className="size-10 shrink-0 rounded-xl text-[#c0cee8] hover:bg-white/10 hover:text-white [&_svg]:size-5"
+    >
       <X />
     </Button>
   );
@@ -179,7 +246,15 @@ function MobileSidebarTrigger() {
   );
 }
 
-function MenuSection({ title, items, pathname }: { title: string; items: typeof mainMenu; pathname: string }) {
+function MenuSection({
+  title,
+  items,
+  pathname,
+}: {
+  title: string;
+  items: typeof mainMenu;
+  pathname: string;
+}) {
   return (
     <SidebarGroup className="p-0">
       <SidebarGroupLabel className="h-8 px-3 text-xs font-semibold tracking-[0.16em] whitespace-nowrap text-[#91a6ce] uppercase transition-all duration-300 ease-in-out group-data-[collapsible=icon]:m-0 group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:overflow-hidden group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:opacity-0">
@@ -191,7 +266,12 @@ function MenuSection({ title, items, pathname }: { title: string; items: typeof 
           return (
             <SidebarMenuItem key={href}>
               <SidebarMenuButton
-                render={<Link href={href} aria-current={active ? "page" : undefined} />}
+                render={
+                  <Link
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                  />
+                }
                 isActive={active}
                 tooltip={label}
                 size="lg"

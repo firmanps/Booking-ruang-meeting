@@ -21,12 +21,12 @@ Aplikasi fullstack untuk pemesanan ruang meeting kantor. Karyawan dapat mencari 
 
 ## Teknologi
 
-| Bagian | Teknologi |
-|---|---|
+| Bagian   | Teknologi                                          |
+| -------- | -------------------------------------------------- |
 | Frontend | Next.js 16, React 19, Tailwind CSS, Base UI, Axios |
-| Backend | NestJS 11, Prisma 7, PostgreSQL, JWT, bcryptjs |
-| Validasi | Zod (shared lewat package `@repo/shared`) |
-| Monorepo | pnpm workspace, Turborepo |
+| Backend  | NestJS 11, Prisma 7, PostgreSQL, JWT, bcryptjs     |
+| Validasi | Zod (shared lewat package `@repo/shared`)          |
+| Monorepo | pnpm workspace, Turborepo                          |
 
 ## Struktur Project
 
@@ -113,11 +113,11 @@ Semua service harus berstatus `Up`, dan database `healthy`.
 
 **7. Buka aplikasi**
 
-| Layanan | Alamat |
-|---|---|
-| Frontend | http://localhost:4000 |
-| API | http://localhost:5000 |
-| PostgreSQL | localhost:5433 |
+| Layanan    | Alamat                |
+| ---------- | --------------------- |
+| Frontend   | http://localhost:4000 |
+| API        | http://localhost:5000 |
+| PostgreSQL | localhost:5433        |
 
 Login memakai [akun demo](#akun-demo) di bawah.
 
@@ -190,14 +190,14 @@ pnpm --filter web dev
 
 ## Perintah Docker yang Sering Digunakan
 
-| Tujuan | Perintah |
-|---|---|
-| Lihat log semua service | `docker compose logs -f` |
-| Lihat log API | `docker compose logs -f api` |
-| Lihat log frontend | `docker compose logs -f web` |
-| Build ulang dan jalankan | `docker compose up -d --build` |
-| Hentikan container (data aman) | `docker compose down` |
-| Hentikan dan hapus data database | `docker compose down -v` |
+| Tujuan                           | Perintah                       |
+| -------------------------------- | ------------------------------ |
+| Lihat log semua service          | `docker compose logs -f`       |
+| Lihat log API                    | `docker compose logs -f api`   |
+| Lihat log frontend               | `docker compose logs -f web`   |
+| Build ulang dan jalankan         | `docker compose up -d --build` |
+| Hentikan container (data aman)   | `docker compose down`          |
+| Hentikan dan hapus data database | `docker compose down -v`       |
 
 > ⚠️ `docker compose down -v` menghapus **seluruh data PostgreSQL**. Setelah volume dibuat ulang, migration dan seed berjalan lagi saat container API dinyalakan.
 
@@ -205,9 +205,9 @@ pnpm --filter web dev
 
 Password sama dengan alamat email. Akun ini hanya untuk pengembangan dan demo, jangan dipakai di production.
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `admin@example.com` | `admin@example.com` |
+| Role     | Email                   | Password                |
+| -------- | ----------------------- | ----------------------- |
+| Admin    | `admin@example.com`     | `admin@example.com`     |
 | Employee | `employee1@example.com` | `employee1@example.com` |
 | Employee | `employee2@example.com` | `employee2@example.com` |
 
@@ -230,7 +230,7 @@ Password sama dengan alamat email. Akun ini hanya untuk pengembangan dan demo, j
 - Membatalkan booking milik pengguna lain
 - Melihat ringkasan reservasi, jumlah ruangan, dan ruangan aktif
 
-### Nilai Tambah
+### Fitur Tambahan & Optomasi
 
 - Dashboard ringkasan untuk employee dan admin
 - Penonaktifan ruangan otomatis membatalkan booking aktif mendatang dan mencatat pembatalannya
@@ -249,31 +249,31 @@ Dokumentasi lengkap ada di [apps/api/doc](./apps/api/doc).
 
 ### Autentikasi
 
-| Method | Endpoint |
-|---|---|
-| POST | `/auth/register` |
-| POST | `/auth/login` |
-| POST | `/auth/logout` |
-| GET | `/auth/me` |
+| Method | Endpoint         |
+| ------ | ---------------- |
+| POST   | `/auth/register` |
+| POST   | `/auth/login`    |
+| POST   | `/auth/logout`   |
+| GET    | `/auth/me`       |
 
 ### Ruangan
 
-| Method | Endpoint | Akses |
-|---|---|---|
-| GET | `/rooms` | Semua user |
-| GET | `/rooms/:id` | Semua user |
-| GET | `/rooms/:id/availability?date=YYYY-MM-DD` | Semua user |
-| POST | `/rooms` | Admin |
-| PATCH | `/rooms/:id` | Admin |
-| DELETE | `/rooms/:id` | Admin |
+| Method | Endpoint                                  | Akses      |
+| ------ | ----------------------------------------- | ---------- |
+| GET    | `/rooms`                                  | Semua user |
+| GET    | `/rooms/:id`                              | Semua user |
+| GET    | `/rooms/:id/availability?date=YYYY-MM-DD` | Semua user |
+| POST   | `/rooms`                                  | Admin      |
+| PATCH  | `/rooms/:id`                              | Admin      |
+| DELETE | `/rooms/:id`                              | Admin      |
 
 ### Booking
 
-| Method | Endpoint | Akses |
-|---|---|---|
-| POST | `/bookings` | User login |
-| GET | `/bookings/me` | User login |
-| GET | `/bookings` | Admin |
+| Method | Endpoint        | Akses                      |
+| ------ | --------------- | -------------------------- |
+| POST   | `/bookings`     | User login                 |
+| GET    | `/bookings/me`  | User login                 |
+| GET    | `/bookings`     | Admin                      |
 | DELETE | `/bookings/:id` | Pemilik booking atau admin |
 
 ## Pencegahan Booking Bentrok
@@ -304,10 +304,10 @@ Zona waktu kantor adalah `Asia/Jakarta` (UTC+7).
 
 Tiga tabel utama:
 
-| Tabel | Isi |
-|---|---|
-| `users` | Akun, role, nama, email, dan password ter-hash |
-| `rooms` | Nama, kapasitas, fasilitas, lokasi, status aktif, waktu perubahan |
+| Tabel      | Isi                                                                        |
+| ---------- | -------------------------------------------------------------------------- |
+| `users`    | Akun, role, nama, email, dan password ter-hash                             |
+| `rooms`    | Nama, kapasitas, fasilitas, lokasi, status aktif, waktu perubahan          |
 | `bookings` | Pemilik, ruangan, judul, waktu mulai/selesai, status, informasi pembatalan |
 
 Seed menyediakan 1 admin, 2 employee, dan 5 ruangan meeting.
@@ -325,6 +325,12 @@ Seed menyediakan 1 admin, 2 employee, dan 5 ruangan meeting.
 **Halaman admin/dashboard menampilkan "Layanan autentikasi sedang tidak tersedia" (503).**
 Frontend di Docker tidak bisa menjangkau API. Pastikan `API_INTERNAL_URL=http://api:5000`
 ada di `apps/web/.env`, lalu jalankan `docker compose up -d --build web`.
+
+## Nilai tambah yang dikerjakan
+
+- **Test konkurensi**: integration test yang mengirim 20 request booking bersamaan untuk ruangan dan jam yang sama, dan membuktikan hanya 1 yang berhasil.
+- **CI:** pipeline (GitHub Actions) yang menjalankan lint, test, dan build setiap push.
+- **Deploy:** aplikasi bisa diakses di URL publik (Vercel, Railway).
 
 ## Batasan dan Rencana Pengembangan
 

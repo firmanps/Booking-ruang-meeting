@@ -322,6 +322,10 @@ Seed menyediakan 1 admin, 2 employee, dan 5 ruangan meeting.
 
 **Data demo tidak muncul.** Seed berjalan saat container API dinyalakan. Untuk mengulang dari nol: `docker compose down -v`, lalu `docker compose up -d --build`.
 
+**Halaman admin/dashboard menampilkan "Layanan autentikasi sedang tidak tersedia" (503).**
+Frontend di Docker tidak bisa menjangkau API. Pastikan `API_INTERNAL_URL=http://api:5000`
+ada di `apps/web/.env`, lalu jalankan `docker compose up -d --build web`.
+
 ## Batasan dan Rencana Pengembangan
 
 Fitur berikut belum tersedia pada versi saat ini:

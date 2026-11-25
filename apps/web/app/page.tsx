@@ -155,14 +155,14 @@ export default function Home() {
           ))}
         </nav>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 border-t border-slate-200 pt-5">
-          <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-            <Button variant="outline" className="h-11 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md">
+        <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-5">
+          <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="w-full">
+            <Button variant="outline" className="h-11 w-full rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md">
               Masuk
             </Button>
           </Link>
-          <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-            <Button className="h-11 rounded-xl bg-[#1c345f] px-3 transition-all hover:-translate-y-0.5 hover:bg-[#2459a5] hover:shadow-md">Daftar</Button>
+          <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="w-full">
+            <Button className="h-11 w-full rounded-xl bg-[#1c345f] px-3 transition-all hover:-translate-y-0.5 hover:bg-[#2459a5] hover:shadow-md">Daftar Gratis</Button>
           </Link>
         </div>
       </aside>

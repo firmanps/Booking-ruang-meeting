@@ -41,6 +41,8 @@ services:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     container_name: booking-ruang-meeting-web
     restart: unless-stopped
+    environment:
+      API_INTERNAL_URL: http://api:5000
     env_file:
       - apps/web/.env
     depends_on:

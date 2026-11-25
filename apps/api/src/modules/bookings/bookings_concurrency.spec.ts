@@ -1,3 +1,4 @@
+//pnpm test -- bookings_concurrency.spec.ts
 import { ConflictException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -139,5 +140,3 @@ describe('BookingsService.create - booking concurrency integration', () => {
     expect(confirmedCount).toBe(1);
   });
 });
-
-//pnpm test -- bookings_concurrency.spec.ts

@@ -19,6 +19,17 @@ import { JwtAuthGuard } from 'src/common/jwt-auth.guard';
 import { ZodValidationPipe } from 'src/common/zod-validation.pipe';
 import { AuthService } from './auth.service';
 
+const COOKIE_NAME = 'accessToken';
+const isProd = process.env.NODE_ENV === 'production';
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: 'lax' as const,
+  path: '/',
+  domain: isProd ? process.env.COOKIE_DOMAIN : undefined,
+};
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -35,31 +46,20 @@ export class AuthController {
     @Body(new ZodValidationPipe(loginSchema)) body: LoginInput,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const result = await this.authService.login(body);
-    response.cookie('accessToken', result.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
+    const { accessToken, user } = await this.authService.login(body);
+    response.cookie(COOKIE_NAME, accessToken, {
+      ...COOKIE_OPTIONS,
       maxAge: 60 * 60 * 1000,
     });
     return {
       message: 'Login berhasil',
-      user: result.user,
+      user: user,
     };
   }
 
   @Post('logout')
   logout(@Res({ passthrough: true }) response: Response) {
-    const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const,
-      path: '/',
-    };
-    response.clearCookie('accessToken', cookieOptions);
-    // Hapus juga cookie lama yang mungkin tersimpan dengan path default /auth.
-    response.clearCookie('accessToken', { ...cookieOptions, path: '/auth' });
+    response.clearCookie(COOKIE_NAME, COOKIE_OPTIONS);
     return { message: 'Logout berhasil' };
   }
 
